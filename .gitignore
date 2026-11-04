@@ -1,0 +1,6 @@
+# Raw and processed data stay off GitHub (size and lyrics copyright)
+data/
+*.mp3
+__pycache__/
+.ipynb_checkpoints/
+.DS_Store

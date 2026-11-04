@@ -1,0 +1,59 @@
+{
+ "config": {
+  "LANGUAGE": "en",
+  "MIN_TOKENS": 50,
+  "SPLIT_FRACTIONS": {
+   "train": 0.7,
+   "val": 0.15,
+   "test": 0.15
+  },
+  "CANDIDATE_TAGS": 200,
+  "TOP_K": 100,
+  "MIN_POS_EVAL": 10,
+  "MIN_PER_CATEGORY": {
+   "mood/emotion": 15,
+   "theme": 15
+  },
+  "MIN_TRAIN_COUNT_EXTRA": 100,
+  "SEED": 575
+ },
+ "funnel": [
+  [
+   "All songs in Music4All",
+   84103
+  ],
+  [
+   "Language = en",
+   84103
+  ],
+  [
+   "Lyrics file present",
+   84103
+  ],
+  [
+   ">= 50 tokens after cleaning",
+   83633
+  ],
+  [
+   "At least one tag",
+   83633
+  ]
+ ],
+ "n_artists": 11838,
+ "n_tag_merges": 256,
+ "dropped_tags": [],
+ "added_for_category": [
+  "sexy",
+  "sad",
+  "epic",
+  "chill",
+  "catchy",
+  "dreamy",
+  "atmospheric",
+  "romantic",
+  "happy",
+  "party",
+  "christian",
+  "summer"
+ ]
+}

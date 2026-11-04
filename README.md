@@ -28,7 +28,7 @@ We frame the task as **multi-label text classification**. Each song has a lyrics
 
 ### Hypotheses
 
-- **H1 (RQ1):** Mood and theme tags will achieve higher macro-F1 and per-tag AUC than instrumentation/production tags, and lyrics will trail audio on genre tags.
+- **H1 (RQ1):** Mood and theme tags will achieve higher macro-F1 and per-tag AUC than instrumentation/production tags, and lyrics will trail the MFCC audio baseline (Section 3.1) on genre tags.
 - **H2 (RQ2):** Sentence embeddings will improve macro-F1 over TF-IDF, with the largest gains on rare tags.
 - **H3 (RQ3):** Classifier chains will give a small but consistent gain over binary relevance, concentrated on strongly co-occurring tags (e.g., *sad* / *melancholy*).
 
@@ -36,50 +36,53 @@ All models must also clearly beat the trivial baselines in Section 3.2 for a res
 
 ### Motivation
 
-Tags drive music search, recommendation, and playlist generation, but user-generated tags are sparse and biased toward popular tracks: new or niche songs often have few or no tags (the cold-start problem). Lyrics are widely available, cheap to process compared with audio, and carry semantic content (themes, emotions, narrative) that audio features capture only indirectly. Prior lyrics work has mostly addressed single-label tasks or small fixed taxonomies: genre [2–4], a few mood clusters [5–7], valence/arousal [8], or emotion categories [9]. We found few studies that predict a large, open vocabulary of social tags from lyrics alone and evaluate both annotation and retrieval; this is the gap we target. Understanding which tags lyrics can and cannot predict also tells us where multimodal (lyrics + audio) systems are most likely to help.
+Tags drive music search, recommendation, and playlist generation, but user-generated tags are sparse and biased toward popular tracks: new or niche songs often have few or no tags (the cold-start problem). Lyrics are widely available, cheap to process compared with audio, and carry semantic content (themes, emotions, narrative) that audio features capture only indirectly. Prior lyrics work has mostly addressed single-label tasks or small fixed taxonomies: genre [2–4], a few mood clusters [5–7], valence/arousal [8], or emotion categories [9]. A recent survey of lyrics information processing [10] organizes lyrics analysis around structure, mood, and topic estimation, and notes that mood estimation still depends on supervised, language-specific annotated lyrics. We found few studies that predict a large, open vocabulary of social tags from lyrics alone and evaluate both annotation and retrieval; this is the gap we target. Understanding which tags lyrics can and cannot predict also tells us where multimodal (lyrics + audio) systems are most likely to help.
 
 ---
 
 ## 2. Dataset
 
-**Music4All** [10] contains about 109k songs. For each song it provides:
+**Music4All** [11] contains about 109k songs. For each song it provides:
 - a 30-second audio clip,
 - metadata,
 - lyrics,
 - user-generated tags and genre labels,
 - language information.
 
-We have a local copy; the lyrics field will be verified in the data check (by Oct. 30).
+We use the **Music4All-EN** subset: 84,103 English-language songs with lyrics, tags, genres, Spotify metadata, and listening histories, but **no audio clips**. The audio baseline (Section 3.1) therefore needs the clips from the full release for the songs in our splits; this is tracked as a risk in Section 6.
 
-**Dataset statistics (filled in after the data check, by Oct. 30):**
+**Dataset statistics** (frozen on Nov. 3; produced by `scripts/dataset_report.py`):
 
 | Statistic | Value |
 |---|---|
-| Songs after language and length filters | *TBD* |
-| Artists after filtering | *TBD* |
-| Train / validation / test songs | *TBD* / *TBD* / *TBD* |
-| Final vocabulary size *K* | *TBD* |
-| Tags per category (genre / mood / theme / era / instr.-prod. / other) | *TBD* |
-| Median tags per song | *TBD* |
+| Songs after language and length filters | 83,633 (470 removed for < 50 tokens) |
+| Artists after filtering | 11,838 |
+| Train / validation / test songs | 57,348 / 13,002 / 13,283 (68.6% / 15.5% / 15.9%) |
+| Final vocabulary size *K* | 112 (top 100 by training frequency + 12 added for mood/emotion and theme) |
+| Tags per category (genre / mood / theme / era / instr.-prod. / other) | 71 / 13 / 4 / 10 / 7 / 7 |
+| Median tags per song (in vocabulary) | 3 |
+| Median lyric length | 224 words |
 
-H1 depends on mood and theme tags surviving top-*K* filtering in useful numbers, so the per-category counts are reported before any model is trained.
+Split checks: no artist appears in more than one split; the median per-tag prevalence difference between the training split and the validation/test splits is 0.002 (maximum 0.018); no tag fell below the 10-positive minimum in validation or test.
 
-**Planned preprocessing:**
+**Effect on H1.** As anticipated, genre tags dominate: the 100 most frequent training tags contain only 3 mood/emotion tags and 1 theme tag. Applying the mitigation below, we added the next most frequent mood/emotion and theme tags with at least 100 training songs (target: 15 per category), which raised mood/emotion to 13 tags but theme only to 4, because Music4All has no further theme tags that frequent. Theme is therefore too small for category-level conclusions on its own. For H1, mood/emotion and theme are analyzed together as one **mood + theme** group (17 tags), and per-tag results are still reported separately.
+
+**Preprocessing** (implemented in `scripts/build_dataset.py`; details in `docs/data_pipeline.md`):
 - Keep English-language songs with non-trivial lyrics, i.e., at least 50 tokens after cleaning.
-- Normalize tags: lowercase them and merge near-duplicates (e.g., `hip hop` / `hip-hop`).
-- Keep the top *K* most frequent tags (*K* ≈ 50–100), counted on the **training split only**, to avoid an extremely sparse long tail.
-- Categorize tags into **genre, mood/emotion, theme, era, instrumentation/production, and other**, so that results can be analyzed by category. The mapping uses only the tag strings (keyword lexicon plus manual review), never model results.
-- Use iterative stratification [11] for the train/validation/test split, so that tag distributions stay balanced across splits.
+- Normalize tags: lowercase them and merge spelling variants (e.g., `hip hop` / `hip-hop` / `hiphop`; 256 merges), plus a short, documented list of same-meaning words (e.g., `melancholic` → `melancholy`).
+- Keep the top 100 most frequent tags, counted on the **training split only**, to avoid an extremely sparse long tail, then top up mood/emotion and theme as described above.
+- Categorize tags into **genre, mood/emotion, theme, era, instrumentation/production, and other**, so that results can be analyzed by category. The mapping uses only the tag strings, never model results: a keyword lexicon suggests a category, and manual corrections are recorded with a reason in `splits/category_overrides.csv` (e.g., `death metal` → genre, `fip` → other, since it names a radio station).
+- Use iterative stratification [12] for the train/validation/test split, so that tag distributions stay balanced across splits.
 - Make the splits **artist-disjoint**: all songs by an artist go into the same split. Otherwise, a model can memorize an artist's recurring vocabulary and inflate test scores. Because iterative stratification works on rows, each artist is treated as one row whose label vector is the union of their songs' tags; artists are assigned to splits, and the assignment is then expanded back to songs. Because whole artists are assigned, the song proportions will only approximate 70/15/15; we report the actual song counts per split in the statistics table. A song-level random split is also reported to quantify the leakage effect (see the leakage check in Section 3.5).
 
 **Leakage-free protocol.** Decisions are made in this order, and the test set is used only once, at the end:
 
 1. Apply label-independent steps to all songs: language and length filters, and rule-based tag normalization (lowercasing, merging spelling variants).
 2. Split songs into artist-disjoint train/validation/test sets (70/15/15), using iterative stratification on a broad candidate set (the 200 most frequent normalized tags). This uses only label frequencies to balance the splits; no model or tag-selection decision depends on it.
-3. Select the final top-*K* tags by training-set frequency. Drop any tag with fewer than 10 positives in the validation or test set, a rule fixed in advance.
+3. Select the final top-*K* tags by training-set frequency, topping up mood/emotion and theme from training-set frequencies only. Drop any tag with fewer than 10 positives in the validation or test set, a rule fixed in advance.
 4. Assign tag categories and freeze the mapping, the vocabulary, and the splits (saved to version-controlled files) before any model is trained.
 
-**Risks and mitigation:** Music4All tags are social (Last.fm-style) tags and are dominated by genre labels, so mood, theme, and instrumentation tags may be sparse after top-*K* filtering. If a category has too few tags, we will increase *K* for that category or merge it into a broader category, and we will report how many tags each category contains.
+**Risks and mitigation:** Music4All tags are social (Last.fm-style) tags and are dominated by genre labels, so mood, theme, and instrumentation tags may be sparse after top-*K* filtering. If a category has too few tags, we will increase *K* for that category or merge it into a broader category, and we will report how many tags each category contains. (Both were needed; see *Effect on H1* above.)
 
 ---
 
@@ -117,9 +120,9 @@ flowchart LR
 ### 3.1 Features
 | Representation | Description |
 |---|---|
-| Bag-of-words / TF-IDF [12] | Unigrams and bigrams, sublinear TF, min/max document-frequency pruning |
+| Bag-of-words / TF-IDF [13] | Unigrams and bigrams, sublinear TF, min/max document-frequency pruning |
 | Stylistic features | Rhyme, repetition, and text statistics, following Mayer et al. [3] (owned by Harish; see Section 8) |
-| Sentence embeddings | Pretrained transformer encoders (Sentence-BERT [13]) applied to lyrics |
+| Sentence embeddings | Pretrained transformer encoders (Sentence-BERT [14]) applied to lyrics |
 | Audio features (comparison only) | MFCC and spectral summary statistics from the Music4All 30-second clips; if time allows, a pretrained audio embedding (VGGish or OpenL3) as a stronger reference |
 
 **Audio baseline limitation.** Hand-crafted summary statistics underrepresent what audio can achieve, so they may make lyrics look closer to audio than they really are. We treat the MFCC baseline as a lower bound on audio performance and say so wherever lyrics and audio are compared. A pretrained audio embedding, if added, gives a fairer upper reference.
@@ -127,7 +130,7 @@ flowchart LR
 ### 3.2 Models
 - **Trivial baselines:** predict the *n* most frequent training tags for every song (popularity baseline), and random scores drawn at each tag's training frequency. The popularity baseline gives every song the same score for a tag, so it cannot rank songs; it anchors annotation metrics only. The random baseline anchors retrieval metrics (its expected AP for a tag equals that tag's test prevalence).
 - **Binary relevance:** `OneVsRestClassifier` with Logistic Regression, Linear SVM, or Naive Bayes. This is the baseline.
-- **Classifier chains** [14], which model dependencies between labels.
+- **Classifier chains** [15], which model dependencies between labels.
 - **Alternatives** if time permits: a small MLP or a fine-tuned transformer on embeddings.
 
 ### 3.3 Evaluation
@@ -175,7 +178,7 @@ Because Step 3 of the protocol guarantees at least 10 positives per tag in the t
 ## 4. Tools
 
 - **Python 3**, with Jupyter notebooks for exploration and scripts for the reproducible pipeline.
-- **scikit-learn** [15] for vectorization, multi-label wrappers, and metrics.
+- **scikit-learn** [16] for vectorization, multi-label wrappers, and metrics.
 - **scikit-multilearn** (or a custom implementation) for iterative stratification.
 - **sentence-transformers / Hugging Face Transformers** for embeddings.
 - **librosa** for audio feature extraction for the audio comparison baseline, and **openl3** (or VGGish) for the optional pretrained audio embedding.
@@ -187,19 +190,19 @@ Because Step 3 of the protocol guarantees at least 10 positives per tag in the t
 ## 5. Related Work
 
 ### Music auto-tagging
-Turnbull et al. [1] framed auto-tagging as semantic annotation and retrieval, introducing CAL500 and the dual evaluation we adopt. Lamere [16] characterized social tags as a rich but noisy, sparse, and popularity-biased source of music semantics, which is the kind of tags Music4All provides. Audio-based deep models now dominate: Choi et al. applied fully convolutional networks [17] and later convolutional-recurrent networks [18] to mel-spectrograms. We characterize how far lyrics alone fall short of, or exceed, audio.
+Turnbull et al. [1] framed auto-tagging as semantic annotation and retrieval, introducing CAL500 and the dual evaluation we adopt. Lamere [17] characterized social tags as a rich but noisy, sparse, and popularity-biased source of music semantics, which is the kind of tags Music4All provides. Audio-based deep models now dominate: Choi et al. applied convolutional-recurrent networks to mel-spectrograms [18]. We characterize how far lyrics alone fall short of, or exceed, audio.
 
 ### Genre and mood classification from lyrics
-Genre classification began with audio features [19]. Mayer et al. [3] showed that rhyme, part-of-speech, and text-statistic features of lyrics carry genre information, and Mayer and Rauber [2] found that combining audio and lyrics beats either alone. For mood, lyrics improve classification when combined with audio [5, 6], and for some mood categories lyrics alone outperform audio [7]. Fell and Sporleder [4] classified lyrics by genre, quality, and period using stylistic and semantic features. Deep models have since been applied to mood from audio and lyrics [8] and to lyrics-based emotion recognition with fine-tuned transformers [9]. These results motivate H1: lyrics should be most informative for mood and theme tags and least informative for instrumentation and production tags.
+Genre classification began with audio features [19]. Mayer et al. [3] showed that rhyme, part-of-speech, and text-statistic features of lyrics carry genre information, and Mayer and Rauber [2] found that combining audio and lyrics beats either alone. For mood, lyrics improve classification when combined with audio [5, 6], and for some mood categories lyrics alone outperform audio [7]. Fell and Sporleder [4] classified lyrics by genre, quality, and period using stylistic and semantic features. Deep models have since been applied to mood from audio and lyrics [8] and to lyrics-based emotion recognition with fine-tuned transformers [9]. Watanabe and Goto's survey of lyrics information processing [10] likewise frames lyrics analysis around structure, mood, and topics; predicting a large, open vocabulary of social tags from lyrics, evaluated for both annotation and retrieval, is the gap this project targets. These results motivate H1: lyrics should be most informative for mood and theme tags and least informative for instrumentation and production tags.
 
 ### Multi-label learning
-Auto-tagging is inherently multi-label. A survey by Tsoumakas and Katakis [20] distinguishes problem transformation (e.g., binary relevance, one classifier per label) from algorithm adaptation. Binary relevance ignores label correlations; classifier chains [14] model them cheaply by feeding earlier predictions into later classifiers, which suits correlated tags such as *sad* and *melancholy*. Iterative stratification [11] keeps rare labels represented in every split.
+Auto-tagging is inherently multi-label. A survey by Tsoumakas and Katakis [20] distinguishes problem transformation (e.g., binary relevance, one classifier per label) from algorithm adaptation. Binary relevance ignores label correlations; classifier chains [15] model them cheaply by feeding earlier predictions into later classifiers, which suits correlated tags such as *sad* and *melancholy*. Iterative stratification [12] keeps rare labels represented in every split.
 
 ### Text representations
-TF-IDF weighting [12] remains a strong, interpretable baseline and is implemented, with the multi-label wrappers we use, in scikit-learn [15]. Pretrained sentence encoders such as Sentence-BERT [13] give dense embeddings that may generalize better across the slang and figurative language common in lyrics.
+TF-IDF weighting [13] remains a strong, interpretable baseline and is implemented, with the multi-label wrappers we use, in scikit-learn [16]. Pretrained sentence encoders such as Sentence-BERT [14] give dense embeddings that may generalize better across the slang and figurative language common in lyrics.
 
 ### Dataset
-Music4All [10] aligns audio clips, lyrics, metadata, genre labels, and user tags for about 109k songs, which makes it well suited for lyrics-based tagging and for an audio comparison on the same songs.
+Music4All [11] aligns audio clips, lyrics, metadata, genre labels, and user tags for about 109k songs, which makes it well suited for lyrics-based tagging and for an audio comparison on the same songs.
 
 ---
 
@@ -221,6 +224,8 @@ Music4All [10] aligns audio clips, lyrics, metadata, genre labels, and user tags
 - **Stretch** (attempted only once the core is complete, decided on Nov. 20), in this order: (1) per-tag significance tests with Benjamini–Hochberg correction, (2) a pretrained audio embedding and audio features for all songs, (3) SHAP explanations, (4) TF-IDF–embedding late fusion, (5) audio–lyrics late fusion, (6) end-to-end transformer fine-tuning. Items are dropped from the end of the list first if the schedule slips. Advanced PIs that are not on this list are core deliverables: the tag-category mapping (Soorya, Objective 1 PI5), the shared evaluation harness (Soorya, Objective 2 PI5), the rare-vs-frequent chain analysis (Mansoor, Objective 2 PI5), and the stylistic feature-importance analysis (Harish, Objective 1 PI5).
 
 **Dependency risk.** All models are evaluated with Soorya's shared harness, so a late harness would block Mansoor and Harish. To prevent this, the harness's interface (score matrix in, metrics table out) and the frozen splits are committed by Oct. 30, with a stub that computes micro/macro F1. Mansoor and Harish build against that interface in parallel, and the retrieval metrics are added by Nov. 6 without changing it.
+
+**Audio data risk.** Our Music4All-EN copy has no audio clips, so the audio baseline depends on obtaining the 30-second clips from the full Music4All release for the 10k-song subset. If the clips are not available by Nov. 13, the audio baseline moves to the stretch list and RQ1 is answered by comparing lyrics models against the trivial baselines and across tag categories only.
 
 ---
 
@@ -341,21 +346,21 @@ These tasks are split equally and are not separate graded objectives; each membe
 
 [9] Y. Agrawal, R. G. R. Shanker, and V. Alluri, "Transformer-based approach towards music emotion recognition from lyrics," in *Proc. European Conf. Information Retrieval (ECIR)*, 2021. arXiv:2101.02051
 
-[10] I. A. P. Santana et al., "Music4All: A new music database and its applications," in *Proc. Int. Conf. Systems, Signals and Image Processing (IWSSIP)*, IEEE, 2020.
+[10] K. Watanabe and M. Goto, "Lyrics information processing: Analysis, generation, and applications," in *Proc. 1st Workshop on NLP for Music and Audio (NLP4MusA)*, 2020, pp. 6–12.
 
-[11] K. Sechidis, G. Tsoumakas, and I. Vlahavas, "On the stratification of multi-label data," in *Proc. ECML PKDD*, 2011.
+[11] I. A. P. Santana et al., "Music4All: A new music database and its applications," in *Proc. Int. Conf. Systems, Signals and Image Processing (IWSSIP)*, IEEE, 2020.
 
-[12] G. Salton and C. Buckley, "Term-weighting approaches in automatic text retrieval," *Information Processing & Management*, vol. 24, no. 5, pp. 513–523, 1988.
+[12] K. Sechidis, G. Tsoumakas, and I. Vlahavas, "On the stratification of multi-label data," in *Proc. ECML PKDD*, 2011.
 
-[13] N. Reimers and I. Gurevych, "Sentence-BERT: Sentence embeddings using Siamese BERT-networks," in *Proc. EMNLP-IJCNLP*, 2019.
+[13] G. Salton and C. Buckley, "Term-weighting approaches in automatic text retrieval," *Information Processing & Management*, vol. 24, no. 5, pp. 513–523, 1988.
 
-[14] J. Read, B. Pfahringer, G. Holmes, and E. Frank, "Classifier chains for multi-label classification," *Machine Learning*, vol. 85, no. 3, pp. 333–359, 2011.
+[14] N. Reimers and I. Gurevych, "Sentence-BERT: Sentence embeddings using Siamese BERT-networks," in *Proc. EMNLP-IJCNLP*, 2019.
 
-[15] F. Pedregosa et al., "Scikit-learn: Machine learning in Python," *Journal of Machine Learning Research*, vol. 12, pp. 2825–2830, 2011.
+[15] J. Read, B. Pfahringer, G. Holmes, and E. Frank, "Classifier chains for multi-label classification," *Machine Learning*, vol. 85, no. 3, pp. 333–359, 2011.
 
-[16] P. Lamere, "Social tagging and music information retrieval," *Journal of New Music Research*, vol. 37, no. 2, pp. 101–114, 2008.
+[16] F. Pedregosa et al., "Scikit-learn: Machine learning in Python," *Journal of Machine Learning Research*, vol. 12, pp. 2825–2830, 2011.
 
-[17] K. Choi, G. Fazekas, and M. Sandler, "Automatic tagging using deep convolutional neural networks," in *Proc. ISMIR*, 2016.
+[17] P. Lamere, "Social tagging and music information retrieval," *Journal of New Music Research*, vol. 37, no. 2, pp. 101–114, 2008.
 
 [18] K. Choi, G. Fazekas, M. Sandler, and K. Cho, "Convolutional recurrent neural networks for music classification," in *Proc. IEEE ICASSP*, 2017.
 

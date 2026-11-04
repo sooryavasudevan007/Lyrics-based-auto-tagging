@@ -1,0 +1,113 @@
+tag,train_count,category,source,reason,added_for_category
+rock,14307,genre,lexicon,,False
+pop,11469,genre,lexicon,,False
+indie,9646,genre,lexicon,,False
+alternative,7769,genre,lexicon,,False
+female vocalists,6602,instrumentation/production,lexicon,,False
+electronic,5645,genre,lexicon,,False
+alternative rock,4888,genre,lexicon,,False
+indie rock,4510,genre,lexicon,,False
+metal,3878,genre,lexicon,,False
+classic rock,3436,genre,lexicon,,False
+singer songwriter,3389,genre,manual,Style label rather than an instrumentation tag,False
+80s,3300,era,lexicon,,False
+folk,3238,genre,lexicon,,False
+soul,3110,genre,lexicon,,False
+british,2962,other,lexicon,,False
+hip hop,2651,genre,lexicon,,False
+dance,2592,genre,manual,Dance music (genre) rather than the activity,False
+indie pop,2472,genre,lexicon,,False
+hard rock,2383,genre,lexicon,,False
+rnb,2109,genre,lexicon,,False
+rap,2058,genre,lexicon,,False
+punk,2054,genre,lexicon,,False
+90s,2043,era,lexicon,,False
+70s,1958,era,lexicon,,False
+experimental,1896,genre,lexicon,,False
+synthpop,1820,genre,manual,Genre; the lexicon's synth rule targets instrumentation,False
+post hardcore,1732,genre,lexicon,,False
+new wave,1719,genre,lexicon,,False
+acoustic,1630,instrumentation/production,lexicon,,False
+progressive rock,1476,genre,lexicon,,False
+heavy metal,1473,genre,lexicon,,False
+hardcore,1471,genre,lexicon,,False
+emo,1456,genre,lexicon,,False
+post punk,1445,genre,lexicon,,False
+punk rock,1373,genre,lexicon,,False
+pop punk,1324,genre,lexicon,,False
+metalcore,1310,genre,lexicon,,False
+60s,1221,era,lexicon,,False
+death metal,1152,genre,lexicon,,False
+dream pop,1090,genre,lexicon,,False
+lo fi,1061,instrumentation/production,manual,Recording/production quality,False
+country,1059,genre,lexicon,,False
+progressive metal,1041,genre,lexicon,,False
+psychedelic,996,genre,lexicon,,False
+pop rock,982,genre,lexicon,,False
+jazz,975,genre,lexicon,,False
+cover,956,instrumentation/production,manual,"Production fact (cover version), not a genre",False
+2018,903,era,lexicon,,False
+fip,884,other,manual,Name of a French radio station that playlisted the song,False
+shoegaze,835,genre,lexicon,,False
+american,834,other,lexicon,,False
+electropop,832,genre,lexicon,,False
+funk,816,genre,lexicon,,False
+blues,788,genre,lexicon,,False
+britpop,750,genre,lexicon,,False
+soundtrack,747,genre,lexicon,,False
+grunge,738,genre,lexicon,,False
+thrash metal,727,genre,lexicon,,False
+love,725,theme,lexicon,,False
+chillout,718,mood/emotion,manual,Also an electronic sub-genre; on Last.fm mostly used to describe a relaxed mood,False
+ambient,718,genre,lexicon,,False
+oldies,693,era,lexicon,,False
+gothic metal,690,genre,lexicon,,False
+black metal,687,genre,lexicon,,False
+canadian,685,other,lexicon,,False
+alternative metal,669,genre,lexicon,,False
+psychedelic rock,662,genre,lexicon,,False
+australian,637,other,lexicon,,False
+doom metal,636,genre,lexicon,,False
+2017,631,era,lexicon,,False
+symphonic metal,626,genre,lexicon,,False
+beautiful,623,mood/emotion,lexicon,,False
+screamo,620,genre,lexicon,,False
+house,619,genre,lexicon,,False
+melodic death metal,614,genre,lexicon,,False
+love at first listen,609,other,manual,"Listener reaction, not a property of the song",False
+industrial,608,genre,lexicon,,False
+piano,579,instrumentation/production,lexicon,,False
+swedish,565,other,lexicon,,False
+power metal,553,genre,lexicon,,False
+garage rock,534,genre,lexicon,,False
+mellow,533,mood/emotion,lexicon,,False
+nu metal,518,genre,lexicon,,False
+electronica,517,genre,lexicon,,False
+disco,498,genre,lexicon,,False
+blues rock,476,genre,lexicon,,False
+trip hop,471,genre,lexicon,,False
+trap,468,genre,lexicon,,False
+male vocalists,460,instrumentation/production,lexicon,,False
+indie folk,409,genre,lexicon,,False
+reggae,390,genre,lexicon,,False
+post rock,389,genre,lexicon,,False
+female fronted metal,388,instrumentation/production,manual,Vocalist gender; the metal genre is captured by other tags,False
+2019,379,era,lexicon,,False
+ballad,378,genre,manual,Song form rather than a mood; kept with genre,False
+10s,367,era,lexicon,,False
+folk rock,367,genre,lexicon,,False
+2015,367,era,lexicon,,False
+melancholy,363,mood/emotion,lexicon,,False
+soft rock,360,genre,lexicon,,False
+sexy,300,mood/emotion,lexicon,,True
+sad,269,mood/emotion,lexicon,,True
+epic,259,mood/emotion,lexicon,,True
+chill,220,mood/emotion,lexicon,,True
+catchy,147,mood/emotion,lexicon,,True
+dreamy,145,mood/emotion,lexicon,,True
+atmospheric,122,mood/emotion,lexicon,,True
+romantic,120,mood/emotion,lexicon,,True
+happy,110,mood/emotion,lexicon,,True
+party,207,theme,lexicon,,True
+christian,154,theme,lexicon,,True
+summer,151,theme,lexicon,,True

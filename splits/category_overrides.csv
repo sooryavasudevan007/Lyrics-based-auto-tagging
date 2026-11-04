@@ -1,0 +1,12 @@
+tag,category,reason
+chillout,mood/emotion,Also an electronic sub-genre; on Last.fm mostly used to describe a relaxed mood
+ballad,genre,Song form rather than a mood; kept with genre
+dance,genre,Dance music (genre) rather than the activity
+love at first listen,other,"Listener reaction, not a property of the song"
+fip,other,Name of a French radio station that playlisted the song
+singer songwriter,genre,Style label rather than an instrumentation tag
+synthpop,genre,Genre; the lexicon's synth rule targets instrumentation
+lo fi,instrumentation/production,Recording/production quality
+cover,instrumentation/production,"Production fact (cover version), not a genre"
+female fronted metal,instrumentation/production,Vocalist gender; the metal genre is captured by other tags
+chillwave,genre,"Electronic sub-genre, not a mood"
