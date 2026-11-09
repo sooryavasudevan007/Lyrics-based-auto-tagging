@@ -4,3 +4,6 @@ data/
 __pycache__/
 .ipynb_checkpoints/
 .DS_Store
+
+# Score matrices are large and can be regenerated
+results/**/*.npy

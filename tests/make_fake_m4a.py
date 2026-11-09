@@ -23,6 +23,8 @@ for n in range(5000):
     if rng.random() < .95:
         n_words = rng.choice([20, 120, 300])
         lines = [" ".join(rng.choices(WORDS, k=8)) for _ in range(n_words // 8)]
+        # planted signal: a tag-specific word appears in the lyrics half the time
+        lines += [f"word{abs(hash(t.lower().replace('-', ' '))) % 997}" for t in ts if rng.random() < .5]
         (out / "lyrics" / f"{sid}.txt").write_text("[Chorus]\n" + "\n".join(lines))
 (out / "id_information.csv").write_text("id\tartist\tsong\talbum_name\n" + "\n".join(info))
 (out / "id_tags.csv").write_text("id\ttags\n" + "\n".join(tags))

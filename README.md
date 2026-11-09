@@ -1,9 +1,71 @@
 # DP1 – Lyrics-Based Music Auto-Tagging
 
-**Design / Requirement Specification** (will evolve into the progress report and final ISMIR-format paper)
+**Design specification and progress report** (will evolve into the final ISMIR-format paper)
 
 **Team:** Soorya Vasudevan, Mansoor Ali, Harish Pugazhenthi Sasikala  
 **Repository:** https://github.com/sooryavasudevan007/Lyrics-based-auto-tagging
+
+---
+
+## Progress Report (Nov. 12)
+
+All results below are on the **validation** split. The test split has not been used (Section 3.4).
+
+### Status
+
+| Work item | Owner | Status |
+|---|---|---|
+| Data pipeline: filtering, tag normalization, artist-disjoint splits, frozen vocabulary | Soorya | Done (`scripts/build_dataset.py`, `docs/data_pipeline.md`) |
+| Tag categories: lexicon + documented manual review | Soorya | Done (`splits/category_overrides.csv`) |
+| Shared evaluation harness: annotation, retrieval, per-category, thresholds, bootstrap | Soorya | Done (`src/evaluate.py`, `docs/evaluation.md`); checked against scikit-learn |
+| Trivial and TF-IDF baselines | Soorya | Done (`scripts/run_baselines.py`) |
+| Sentence embeddings, classifier chains, tuning | Mansoor | In progress |
+| Stylistic features, error analysis, audio baseline | Harish | In progress; audio clips not in our Music4All-EN copy (see Section 6) |
+
+The frozen dataset has 83,633 songs by 11,838 artists and *K* = 112 tags; Section 2 gives the full statistics.
+
+### Baseline results
+
+Untuned models. Annotation metrics are reported at a fixed 0.5 threshold and with per-tag thresholds tuned on validation; tuned scores are optimistic because thresholds and evaluation use the same split. Retrieval metrics do not depend on thresholds.
+
+| Model | Macro-F1 (0.5 / tuned) | Micro-F1 (0.5 / tuned) | MAP | P@10 | ROC-AUC | Fit time |
+|---|---|---|---|---|---|---|
+| Random | 0.028 | 0.079 | 0.028 | 0.029 | 0.504 | – |
+| Popularity (top-3 tags for every song) | 0.009 | 0.202 | 0.028 | 0.029 | 0.500 | – |
+| TF-IDF + Naive Bayes (calibrated) | 0.023 / 0.088 | 0.066 / 0.066 | 0.078 | 0.138 | 0.599 | 14 s |
+| TF-IDF + Linear SVM (calibrated) | 0.040 / 0.161 | 0.078 / 0.186 | 0.113 | 0.262 | 0.716 | 85 s |
+| **TF-IDF + Logistic Regression** | 0.019 / **0.165** | 0.066 / **0.207** | **0.122** | **0.274** | **0.759** | 24 s |
+
+TF-IDF uses unigrams and bigrams (186,777 features, sublinear TF).
+
+**Observations.**
+- **Lyrics carry tag information.** Logistic Regression ranks songs far better than chance: MAP is 4.4× the random baseline and P@10 is 0.27 against 0.03.
+- **The fixed 0.5 threshold is unusable for annotation.** The average tag is on about 3% of songs, so predicted probabilities rarely reach 0.5. Per-tag thresholds are needed (Mansoor, Objective 3).
+- **Micro-F1 rewards predicting frequent tags.** The popularity baseline, which predicts *rock, pop, indie* for every song, nearly matches tuned Logistic Regression on micro-F1 (0.202 vs. 0.207) while scoring 0.009 macro-F1. This supports using macro-F1 as the primary metric.
+- **Naive Bayes is the weakest model.** Its per-tag F1 tuning picks very low thresholds that label most songs positive (Hamming loss 0.45), so tuned F1 is not a reliable comparison for weak models.
+
+### First look at H1 (Logistic Regression, tuned thresholds)
+
+| Category | Tags | Macro-F1 | MAP | ROC-AUC |
+|---|---|---|---|---|
+| Genre | 71 | 0.217 | 0.162 | 0.790 |
+| Theme | 4 | 0.060 | 0.103 | 0.806 |
+| Instrumentation/production | 7 | 0.121 | 0.076 | 0.731 |
+| Era | 10 | 0.113 | 0.072 | 0.693 |
+| Mood/emotion | 13 | 0.022 | 0.021 | 0.703 |
+| Other | 7 | 0.074 | 0.038 | 0.647 |
+| **Mood + theme (H1 group)** | 17 | 0.031 | 0.041 | 0.727 |
+
+- **The baseline does not support H1.** On the planned metrics, the mood + theme group scores *below* instrumentation/production (macro-F1 0.031 vs. 0.121; MAP 0.041 vs. 0.076). On ROC-AUC the two are level (0.727 vs. 0.731).
+- **Genre is the best-predicted category.** The top tags by AP are *rap* (AUC 0.97), *hip hop*, *death metal*, *pop* and *trap*, all genres with distinctive vocabulary. The worst are mostly mood tags (*atmospheric*, *chill*, *dreamy*, *happy*, *romantic*) and recent-year tags (*2015*, *2019*, *10s*).
+- **Caveat: MAP and F1 depend on tag prevalence.** Mood tags are rare (24–114 validation positives each, versus 2,000+ for *pop*), and both metrics fall with prevalence even when ranking quality is unchanged. ROC-AUC does not, so from now on we also report it per category as a **secondary** comparison. Macro-F1 and MAP remain the primary metrics as planned; we add this analysis after seeing the baseline, and say so.
+- **Open question for the next phase:** do sentence embeddings (RQ2) close the gap for mood tags, whose meaning is often expressed indirectly rather than by keywords?
+
+### Next steps (to Nov. 20)
+
+- **Soorya:** per-tag and per-category reporting with bootstrap confidence intervals; most informative TF-IDF terms per tag; learning curves (Objective 3).
+- **Mansoor:** sentence-embedding models and classifier chains with the shared harness; per-tag threshold tuning across all models.
+- **Harish:** stylistic features; error analysis of mood tags; obtain audio clips for the 10k-song subset or move the audio baseline to stretch by Nov. 13.
 
 ---
 
@@ -211,9 +273,9 @@ Music4All [11] aligns audio clips, lyrics, metadata, genre labels, and user tags
 | Dates | Milestone | Objectives |
 |---|---|---|
 | Oct. 15–19 | Design specification | Finalize scope and research questions, literature review, README v1 |
-| Oct. 20–30 | Data pipeline | Load Music4All, filter by language, clean lyrics, artist-disjoint stratified splits, then freeze tag vocabulary and categories on the training split; exploratory statistics |
-| Oct. 31–Nov. 6 | Baselines | TF-IDF + one-vs-rest LR/SVM/NB, shared evaluation harness (annotation + retrieval metrics) |
-| **Nov. 6** | **Progress report** | Baseline results in README, updated related work |
+| Oct. 20–Nov. 3 | Data pipeline (slipped: dataset access) | Load Music4All, filter by language, clean lyrics, artist-disjoint stratified splits, then freeze tag vocabulary and categories on the training split; exploratory statistics |
+| Oct. 31–Nov. 12 | Baselines | TF-IDF + one-vs-rest LR/SVM/NB, shared evaluation harness (annotation + retrieval metrics) |
+| **Nov. 12** | **Progress report** | 3–4 page ISMIR-format PDF (`paper/`) and README update: dataset, baselines, per-category results, individual status |
 | Nov. 7–20 | Extended models | Sentence embeddings, classifier chains, stylistic features, audio baseline (10k-song subset), hyperparameter tuning |
 | Nov. 21–27 | Analysis | Per-category and per-tag analysis, error analysis, informative terms, runtime/scaling stats |
 | Nov. 28–Dec. 4 | Final report | ISMIR-format LaTeX paper, cleaned repository, reproducibility instructions |

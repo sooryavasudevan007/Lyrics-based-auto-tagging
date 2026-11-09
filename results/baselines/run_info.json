@@ -1,0 +1,13 @@
+{
+ "tfidf": {
+  "ngram_range": "(1, 2)",
+  "sublinear_tf": "True",
+  "min_df": "5",
+  "max_df": "0.5",
+  "max_features": "200000",
+  "dtype": "<class 'numpy.float32'>"
+ },
+ "tfidf_seconds": 12.6,
+ "popularity_n_tags": 3,
+ "split": "val"
+}
