@@ -1,0 +1,13 @@
+| Tag | Category | AUC | Highest-weighted terms |
+|---|---|---|---|
+| rap | genre | 0.966 | fuck, shit, bitch, nigga, ain, niggas, em, like |
+| death metal | genre | 0.966 | blood, death, dead, within, flesh, pain, ov, shall |
+| christian | theme | 0.888 | god, you are, lord, praise, jesus, lift, my soul, every |
+| summer | theme | 0.721 | summer, sun, the summer, beach, the sun, the beach, sunshine, oh oh |
+| party | theme | 0.833 | party, get, wanna, dance, we can, baby, we re, cause |
+| love | theme | 0.78 | love, cause, with you, love you, baby, heart, you and, without you |
+| sad | mood/emotion | 0.751 | would, never, anymore, cause, have, everything, sorry, don want |
+| romantic | mood/emotion | 0.823 | love, love you, baby, my love, my life, without you, re the, with you |
+| happy | mood/emotion | 0.747 | la la, happy, la, hey, ba, oh, blue, girl |
+| 80s | era | 0.779 | ooh, tonight, got to, love, street, oh, look, of love |
+| female vocalists | instrumentation/production | 0.691 | love, boy, he, my man, him, am, cause, ooh |

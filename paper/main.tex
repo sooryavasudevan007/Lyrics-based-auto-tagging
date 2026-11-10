@@ -113,18 +113,18 @@ SVM & .161 & .186 & .113 & .262 & .716 \\
 LR & \textbf{.165} & \textbf{.207} & \textbf{.122} & \textbf{.274} & \textbf{.759} \\
 \bottomrule
 \end{tabular}
-\caption{Validation results. F1 uses per-tag thresholds tuned on validation (optimistic); at a fixed 0.5 threshold LR macro-F1 is only .019. Fit times: LR 24\,s, SVM 85\,s, NB 14\,s. 95\% CI for LR: macro-F1 \tbd{a--b}, MAP \tbd{c--d}.}
+\caption{Validation results. F1 uses per-tag thresholds tuned on validation (optimistic); at a fixed 0.5 threshold LR macro-F1 is only .019. Fit times: LR 24\,s, SVM 85\,s, NB 14\,s. Artist-bootstrap 95\% CIs for LR (500 resamples): macro-F1 [.156, .169], MAP [.117, .131].}
 \label{tab:baselines}
 \end{table}
 
 \textbf{Lyrics carry tag information.} LR is the best model on every metric (\tabref{tab:baselines}): MAP is 4.4$\times$ the random baseline and P@10 rises from .03 to .27. The fixed 0.5 threshold is unusable because the average tag is on about 3\% of songs, so per-tag thresholds are essential. Micro-F1 is misleading: predicting \emph{rock, pop, indie} for every song nearly matches LR on micro-F1 (.202 vs.\ .207) while scoring .009 macro-F1, which supports macro-F1 as our primary metric.
 
-\begin{figure}[t]
+\begin{figure*}[t]
 \centering
-\includegraphics[width=\columnwidth]{figs/per_tag_auc.png}
+\includegraphics[width=\textwidth]{figs/per_tag_auc.png}
 \caption{Per-tag ROC-AUC of TF-IDF + LR on validation, sorted and colored by tag category.}
 \label{fig:pertag}
-\end{figure}
+\end{figure*}
 
 \begin{table}[t]
 \centering\small
@@ -144,14 +144,16 @@ Mood/emotion & 13 & .022 & .021 & .703 \\
 \label{tab:categories}
 \end{table}
 
-\textbf{H1 is not supported so far.} On the planned metrics the mood + theme group scores below instrumentation/production (macro-F1 .031 vs.\ .121; MAP .041 vs.\ .076), and level on AUC (.727 vs.\ .731; \tabref{tab:categories}). Genre is predicted best: the top tags are \emph{rap} (AUC .97), \emph{hip hop}, \emph{death metal} and \emph{trap}, genres with distinctive vocabulary (\figref{fig:pertag}). The worst are mood tags (\emph{atmospheric}, \emph{chill}, \emph{dreamy}, \emph{happy}) and recent-year tags. Part of the gap is prevalence: mood tags have 24--114 validation positives against 2,455 for \emph{pop}, and MAP and F1 fall with prevalence even when ranking quality does not, whereas AUC does not. We therefore add per-category AUC as a \emph{secondary} comparison, noting that this was decided after seeing the baseline.
+\textbf{H1 is not supported so far.} On the planned metrics the mood + theme group scores below instrumentation/production (macro-F1 .031 vs.\ .121; MAP .041 vs.\ .076), and level on AUC (.727 vs.\ .731; \tabref{tab:categories}). Genre is predicted best: by AUC the top tags are \emph{death metal}, \emph{rap} and \emph{trap} (.96--.97), followed by other metal sub-genres and \emph{hip hop}, all genres with distinctive vocabulary (\figref{fig:pertag}). At the bottom are recent-year tags (\emph{10s}, \emph{2015}, \emph{2019}; AUC .52--.56), nationality tags (\emph{canadian}, \emph{swedish}) and mood tags (\emph{chill}, \emph{chillout}, \emph{mellow}). Part of the gap is prevalence: mood tags have 24--114 validation positives against 2,455 for \emph{pop}, and MAP and F1 fall with prevalence even when ranking quality does not, whereas AUC does not. We therefore add per-category AUC as a \emph{secondary} comparison, noting that this was decided after seeing the baseline.
 
-\textbf{Informative terms and data size.} The highest-weighted terms for \emph{christmas} are \tbd{terms}, for \emph{rap} \tbd{terms}, and for \emph{sad} \tbd{terms}, which suggests \tbd{interpretation}. Learning curves (\figref{fig:lc}) show \tbd{trend}: AUC rises from \tbd{x} with 10\% of the training artists to \tbd{y} with all of them.
+\textbf{Informative terms.} The highest-weighted LR terms are topical for well-predicted tags: \emph{blood, death, flesh, pain} for \emph{death metal}; \emph{god, lord, praise, jesus} for \emph{christian} (AUC .89); \emph{summer, sun, beach} for \emph{summer}; and profanity and slang for \emph{rap}. For \emph{sad} they are diffuse function words of loss (\emph{never, anymore, sorry}), consistent with mood being expressed indirectly. \emph{Female vocalists} is predicted from \emph{he, him, my man}: lyrics reveal the singer's perspective rather than any sound.
+
+\textbf{Data size.} Learning curves (\figref{fig:lc}) are still rising at full size: macro AUC grows from .690 with 10\% of the training artists (6.4k songs) to .759 with all 57k, and fit time grows roughly linearly (3\,s to 41\,s). Mood + theme gains more (.640 to .727) than genre (.724 to .790), so part of the mood gap may be a lack of training examples rather than of lyrical signal.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.85\columnwidth]{figs/learning_curve.png}
-\caption{Validation macro ROC-AUC of TF-IDF + LR against training-set size (artists subsampled).}
+\caption{Validation macro ROC-AUC of TF-IDF + LR against training-set size (training artists subsampled at 10, 25, 50 and 100\%).}
 \label{fig:lc}
 \end{figure}
 

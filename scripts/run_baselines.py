@@ -24,38 +24,14 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from sklearn.calibration import CalibratedClassifierCV
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import GroupKFold
-from sklearn.multiclass import OneVsRestClassifier
-from sklearn.naive_bayes import MultinomialNB
-from sklearn.svm import LinearSVC
-
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from src import config as C                                            # noqa: E402
 from src.data import load_split, load_categories                       # noqa: E402
 from src.evaluate import evaluate, tune_thresholds, bootstrap_ci       # noqa: E402
+from src.models import TFIDF, make_vectorizer, make_model             # noqa: E402
 
 RESULTS = C.ROOT / "results" / "baselines"
-TFIDF = dict(ngram_range=(1, 2), sublinear_tf=True, min_df=5, max_df=0.5,
-             max_features=200_000, dtype=np.float32)
 ALL = ["popularity", "random", "tfidf_lr", "tfidf_svm", "tfidf_nb"]
-
-
-def calibrated(est, artists):
-    cv = list(GroupKFold(n_splits=5).split(np.zeros(len(artists)), groups=artists))
-    return CalibratedClassifierCV(est, method="sigmoid", cv=cv)
-
-
-def make_model(name, artists):
-    if name == "tfidf_lr":
-        return OneVsRestClassifier(LogisticRegression(C=1.0, solver="liblinear"), n_jobs=-1)
-    if name == "tfidf_svm":
-        return OneVsRestClassifier(calibrated(LinearSVC(C=1.0), artists), n_jobs=-1)
-    if name == "tfidf_nb":
-        return OneVsRestClassifier(calibrated(MultinomialNB(alpha=0.1), artists), n_jobs=-1)
-    raise ValueError(name)
 
 
 def to_markdown(df):
@@ -81,7 +57,7 @@ def main():
     vec_time = 0.0
     if any(m.startswith("tfidf") for m in args.models):
         t = time.time()
-        vec = TfidfVectorizer(**TFIDF)
+        vec = make_vectorizer()
         X_tr = vec.fit_transform(train.texts)
         X_va = vec.transform(val.texts)
         vec_time = time.time() - t
