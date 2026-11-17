@@ -1,0 +1,55 @@
+{
+  "processed_dataset": {
+    "songs": 83633,
+    "split_counts": {
+      "train": 57348,
+      "test": 13283,
+      "val": 13002
+    },
+    "splits_sha256": "580db07ee3a857e5f3670fdb26dec9905e283dbb32ec57cfe01dd05519b7b84f",
+    "vocab_sha256": "18dc0d0ea69d391bb3f02fc39f903786bdeb9de277a19ac404402c15b48fd51b",
+    "raw_tags_sha256": "df763fa4034efd811d4721338e060be2bf7dd963ba76516b721d92fc5c21ff1a",
+    "lyrics_sha256": "d1ee56087a9ff33eb1be183762041fbfd983d9c2a29b6386d3ca3c23b9c17b66",
+    "test_evaluated": false
+  },
+  "raw_files": [
+    {
+      "file": "lyrics.zip",
+      "sha256": "d1ee56087a9ff33eb1be183762041fbfd983d9c2a29b6386d3ca3c23b9c17b66",
+      "bytes": 105393095,
+      "source": "https://huggingface.co/datasets/Leon299/music4all/resolve/main/lyrics.zip"
+    },
+    {
+      "file": "id_tags.csv",
+      "sha256": "df763fa4034efd811d4721338e060be2bf7dd963ba76516b721d92fc5c21ff1a",
+      "bytes": 6485756,
+      "source": "https://huggingface.co/datasets/Leon299/music4all/resolve/main/id_tags.csv"
+    },
+    {
+      "file": "id_information.csv",
+      "sha256": "11b7638e54c6f1bbb69746a087dcc62622cc9f04a7d3de13e98ffd073685be59",
+      "bytes": 7000455,
+      "source": "https://huggingface.co/datasets/Leon299/music4all/resolve/main/id_information.csv"
+    },
+    {
+      "file": "id_lang.csv",
+      "sha256": "4d622b8a8f25130c2737a383e70ee1bfd117f21174483e618fab928d3634091b",
+      "bytes": 2270153,
+      "source": "https://huggingface.co/datasets/Leon299/music4all/resolve/main/id_lang.csv"
+    }
+  ],
+  "mirror_revision": "a391160e3e17f351d5ab2d05439a7d3d7f0440eb",
+  "audio": {
+    "source_repository": "https://huggingface.co/datasets/Leon299/music4all",
+    "source_revision": "a391160e3e17f351d5ab2d05439a7d3d7f0440eb",
+    "source_type": "third-party mirror",
+    "subset_sha256": "634a508ebd252e908cef82e723f91fbc9fad5ab2b5c1fc1115a7620db5d57390",
+    "required": 10000,
+    "verified": 10000,
+    "failed": [],
+    "seconds": 16.369225071000074,
+    "verification": "ZIP CRC32 + uncompressed size; per-file SHA256 recorded"
+  },
+  "audio_archive_index_sha256": "20e82abb5d89d604e040c42e9909593ef3b4e0c196a8213c7c0b20c60bad0f23",
+  "test_evaluated": false
+}

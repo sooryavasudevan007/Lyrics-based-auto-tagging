@@ -7,3 +7,5 @@ __pycache__/
 
 # Score matrices are large and can be regenerated
 results/**/*.npy
+results/**/*.npz
+results/**/*.joblib

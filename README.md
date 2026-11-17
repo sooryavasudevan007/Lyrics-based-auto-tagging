@@ -20,9 +20,22 @@ Submitted as a 4-page ISMIR-format paper: [`paper/DP1_progress_report.pdf`](pape
 | Shared evaluation harness: annotation, retrieval, per-category, thresholds, bootstrap | Soorya | Done (`src/evaluate.py`, `docs/evaluation.md`); checked against scikit-learn |
 | Trivial and TF-IDF baselines | Soorya | Done (`scripts/run_baselines.py`) |
 | Sentence embeddings, classifier chains, tuning | Mansoor | Mostly done (see *Team results* below); second encoder and TF-IDF tuning in progress |
-| Stylistic features, error analysis, audio baseline | Harish | Mostly done (see *Team results* below); audio clips for a 10k-song subset obtained; audio-vs-lyrics category comparison in progress |
+| Stylistic features, error analysis, audio baseline | Harish | 12/15 PIs done; audio category interpretation and disagreement-example review (PI3–PI4) in progress; pretrained audio/fusion (PI5) not started |
 
 The frozen dataset has 83,633 songs by 11,838 artists and *K* = 112 tags; Section 2 gives the full statistics.
+
+**Individual progress (Harish): 12 done, 2 in progress, 1 not started.**
+
+| Objective | PI1 | PI2 | PI3 | PI4 | PI5 |
+|---|---|---|---|---|---|
+| Stylistic features | Done | Done | Done | Done | Done |
+| Error analysis | Done | Done | Done | Done | Done |
+| Audio baseline | Done | Done | In progress | In progress | Not started |
+
+The audio category-comparison and modality-disagreement tables are preliminary;
+their interpretation and example-song review are in progress. Detailed evidence
+is in the [individual progress report](reports/implementation_progress.md) and
+[`results/Harish/pi_status.json`](results/Harish/pi_status.json).
 
 ### Baseline results
 
@@ -63,6 +76,36 @@ Validation split; per-tag thresholds (and fusion weights) tuned on validation, s
 - **Audio (10k-song subset, 6,857 train / 1,555 validation songs):** MFCC/spectral LR reaches macro-F1/MAP .149/.103, versus .127/.098 for TF-IDF + stylistic features on the same songs.
 - **Error analysis:** genre overlap, non-lyrical attributes and missing tags recur; lyric length correlates weakly with per-song F1 (Spearman .215).
 
+### Implementation and reproducibility
+
+The stylistic-feature, error-analysis and matched audio pipelines are implemented in
+[`scripts/run_experiments.py`](scripts/run_experiments.py). Numeric features,
+validation metrics, reviewed errors, clip checksums and PI evidence are in
+[`results/Harish/`](results/Harish/). Twelve PIs are complete. Audio category interpretation and disagreement-example
+review (PI3–PI4) remain in progress; their generated tables are preliminary.
+Pretrained audio embeddings and audio–lyrics fusion (PI5) have not started.
+
+See the [reproducibility instructions](docs/experiment_reproducibility.md) for
+installation, frozen-data restoration and commands, the
+[implementation progress report](reports/implementation_progress.md) for all 15 PI
+statuses, and [verification results](reports/implementation_verification.txt) for
+the isolated test run. [`scripts/summarize_results.py`](scripts/summarize_results.py)
+regenerates the PI report and figures; updating the manuscript requires its explicit
+`--update-paper` option. Raw lyrics, audio clips, private review text, models and
+score arrays are excluded from Git. The test split has not been evaluated.
+
+Use Python 3.10 or later and install FFmpeg. Lyric experiments require locally
+processed Music4All-EN data; follow the linked restoration instructions first.
+
+```bash
+python -m pip install -r requirements.txt
+python -m unittest discover -s tests -p 'test_experiments.py' -v
+python scripts/run_experiments.py style
+python scripts/run_experiments.py errors --per-category 6 --bootstrap 200
+python scripts/run_experiments.py audio --audio-features results/Harish/audio/features_all.csv.gz
+python scripts/summarize_results.py
+```
+
 ### First look at H1 (Logistic Regression, tuned thresholds)
 
 | Category | Tags | Macro-F1 | MAP | ROC-AUC |
@@ -85,7 +128,7 @@ Validation split; per-tag thresholds (and fusion weights) tuned on validation, s
 - **Nov. 17–20:**
   - **Soorya:** leakage check (artist-disjoint vs. song-level split), paired bootstrap tests for RQ2 and RQ3, per-tag Benjamini–Hochberg tests.
   - **Mansoor:** TF-IDF tuning (Obj. 3 PI2) and a second sentence encoder (Obj. 1 PI3).
-  - **Harish:** audio vs. lyrics by tag category and the tags where they disagree most (Obj. 3 PI3–PI4).
+  - **Harish:** complete interpretation of the preliminary audio-vs-lyrics category comparisons and review the disagreement examples (Obj. 3 PI3–PI4); then review the final fusion model and coordinate model selection.
 - **Nov. 21–27:** one test-set evaluation of the frozen models.
 - **Nov. 28–Dec. 4:** final ISMIR paper.
 
@@ -265,7 +308,7 @@ Because Step 3 of the protocol guarantees at least 10 positives per tag in the t
 - **scikit-learn** [16] for vectorization, multi-label wrappers, and metrics.
 - **scikit-multilearn** (or a custom implementation) for iterative stratification.
 - **sentence-transformers / Hugging Face Transformers** for embeddings.
-- **librosa** for audio feature extraction for the audio comparison baseline, and **openl3** (or VGGish) for the optional pretrained audio embedding.
+- **SciPy and FFmpeg** for MFCC/spectral audio features and clip decoding; **CMUdict** for phonetic rhyme features. **OpenL3** (or VGGish) remains optional stretch work.
 - **pandas, NumPy, matplotlib** for data handling and plots.
 - **Git/GitHub** for version control and the report, with LaTeX (ISMIR template) for the final paper.
 
