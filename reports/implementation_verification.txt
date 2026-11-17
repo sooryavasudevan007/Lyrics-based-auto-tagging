@@ -1,0 +1,26 @@
+Experiment verification (2026-11-16)
+
+Command: OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python -m unittest discover -s tests -p 'test_experiments.py' -v
+
+test_all_commands_use_isolated_fixture_and_leave_test_unscored (test_experiments.EndToEndTests.test_all_commands_use_isolated_fixture_and_leave_test_unscored) ... ok
+test_empty_and_unknown_words_are_finite (test_experiments.FeatureTests.test_empty_and_unknown_words_are_finite) ... ok
+test_repetition_and_rhyme_are_distinct (test_experiments.FeatureTests.test_repetition_and_rhyme_are_distinct) ... ok
+test_waveform_features_measure_frequency (test_experiments.FeatureTests.test_waveform_features_measure_frequency) ... ok
+test_archive_entry_spanning_volumes_checks_integrity (test_experiments.ProtocolTests.test_archive_entry_spanning_volumes_checks_integrity) ... ok
+test_artist_and_id_leakage_rejected (test_experiments.ProtocolTests.test_artist_and_id_leakage_rejected) ... ok
+test_fixed_subset_is_order_independent_and_proportional (test_experiments.ProtocolTests.test_fixed_subset_is_order_independent_and_proportional) ... ok
+test_multilabel_confusions_are_fn_fp_events (test_experiments.ProtocolTests.test_multilabel_confusions_are_fn_fp_events) ... ok
+test_scores_align_by_id_and_reject_tag_mismatch (test_experiments.ProtocolTests.test_scores_align_by_id_and_reject_tag_mismatch) ... ok
+test_sparse_model_fits_noncanonical_matrix (test_experiments.ProtocolTests.test_sparse_model_fits_noncanonical_matrix) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 12.201s
+
+OK
+
+Package consistency checks:
+- 12 done, 2 in progress, 1 not started.
+- Objective 3 PI3 and PI4 remain in progress; generated tables are preliminary.
+- Existing README sections and other team content preserved.
+- Published four-page report and matching source preserved.
+- All 56 numeric CSV/CSV.GZ result files preserved byte for byte.

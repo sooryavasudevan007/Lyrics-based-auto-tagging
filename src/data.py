@@ -10,6 +10,7 @@
 from dataclasses import dataclass
 import gzip
 import json
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -26,27 +27,29 @@ class Split:
     tags: list
 
 
-def load_vocab():
-    return json.loads((C.SPLITS_DIR / "vocab.json").read_text())
+def load_vocab(splits_dir=None):
+    return json.loads((Path(splits_dir or C.SPLITS_DIR) / "vocab.json").read_text())
 
 
-def load_categories():
+def load_categories(splits_dir=None):
     """tag -> category (lexicon suggestion corrected by manual overrides)."""
-    df = pd.read_csv(C.SPLITS_DIR / "tag_categories.csv", keep_default_na=False)
+    df = pd.read_csv(Path(splits_dir or C.SPLITS_DIR) / "tag_categories.csv", keep_default_na=False)
     return dict(zip(df["tag"], df["category"]))
 
 
-def _songs():
-    with gzip.open(C.PROCESSED_DIR / "songs.jsonl.gz", "rt", encoding="utf-8") as f:
+def _songs(processed_dir=None):
+    with gzip.open(Path(processed_dir or C.PROCESSED_DIR) / "songs.jsonl.gz", "rt", encoding="utf-8") as f:
         return [json.loads(line) for line in f]
 
 
-def load_split(split: str, level: str = "artist") -> Split:
+def load_split(split: str, level: str = "artist", *, processed_dir=None, splits_dir=None) -> Split:
     """split: train | val | test. level: 'artist' (default) or 'song' (leakage check only)."""
-    vocab = load_vocab()
+    if split not in {"train", "val", "test"} or level not in {"artist", "song"}:
+        raise ValueError("Expected train/val/test and artist/song split level")
+    vocab = load_vocab(splits_dir)
     idx = {t: i for i, t in enumerate(vocab)}
     key = "split" if level == "artist" else "split_song_level"
-    rows = [r for r in _songs() if r[key] == split]
+    rows = [r for r in _songs(processed_dir) if r[key] == split]
     Y = np.zeros((len(rows), len(vocab)), dtype=np.int8)
     for i, r in enumerate(rows):
         for t in r["tags"]:
