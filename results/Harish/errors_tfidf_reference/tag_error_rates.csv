@@ -1,0 +1,113 @@
+tag,category,n_observed,n_predicted,n_extra,n_missed,threshold
+canadian,other,173,9740,9596,29,0.01
+swedish,other,178,5299,5200,79,0.01
+rock,genre,3308,7406,4933,835,0.21
+mellow,mood/emotion,114,4374,4321,61,0.01
+garage rock,genre,114,4325,4266,55,0.01
+alternative,genre,1733,4904,3907,736,0.14
+electronica,genre,110,3656,3601,55,0.01
+indie,genre,2173,4622,3230,781,0.18
+female vocalists,instrumentation/production,1545,4057,3216,704,0.13
+british,other,750,3394,3021,377,0.06
+male vocalists,instrumentation/production,99,2897,2841,43,0.01
+indie rock,genre,1039,3054,2525,510,0.1
+alternative rock,genre,1116,2792,2315,639,0.11
+fip,other,245,2361,2261,145,0.02
+trip hop,genre,139,2265,2218,92,0.01
+american,other,179,2029,1972,122,0.02
+shoegaze,genre,236,1977,1890,149,0.02
+pop,genre,2455,3341,1832,946,0.27
+2018,era,191,1829,1782,144,0.02
+electronic,genre,1273,2085,1644,832,0.14
+progressive rock,genre,316,1647,1541,210,0.04
+singer songwriter,genre,878,1880,1532,530,0.09
+experimental,genre,417,1509,1396,304,0.05
+ballad,genre,81,1249,1217,49,0.01
+indie pop,genre,530,1340,1205,395,0.07
+classic rock,genre,740,1479,1156,417,0.11
+80s,era,701,1341,1090,450,0.1
+ambient,genre,136,1113,1085,108,0.02
+dream pop,genre,249,1103,1041,187,0.03
+hard rock,genre,530,1212,1017,335,0.07
+indie folk,genre,87,1018,1002,71,0.01
+punk,genre,383,1108,988,263,0.06
+synthpop,genre,355,1043,973,285,0.05
+90s,era,408,1053,961,316,0.06
+britpop,genre,160,990,942,112,0.02
+punk rock,genre,210,973,920,157,0.04
+70s,era,420,1009,867,278,0.07
+post rock,genre,83,868,849,64,0.01
+folk,genre,750,1121,847,476,0.11
+new wave,genre,368,949,846,265,0.05
+soul,genre,684,1080,794,398,0.13
+lo fi,instrumentation/production,194,801,772,165,0.03
+acoustic,instrumentation/production,348,761,694,281,0.05
+soft rock,genre,77,707,684,54,0.01
+screamo,genre,194,750,671,115,0.02
+psychedelic rock,genre,115,681,666,100,0.02
+metal,genre,832,1056,641,417,0.17
+dance,genre,756,933,640,463,0.11
+psychedelic,genre,208,670,638,176,0.03
+grunge,genre,158,672,627,113,0.02
+post hardcore,genre,450,773,580,257,0.07
+post punk,genre,311,625,568,254,0.05
+metalcore,genre,383,763,565,185,0.06
+house,genre,168,589,552,131,0.02
+hardcore,genre,407,676,521,252,0.06
+rnb,genre,535,726,504,313,0.12
+love at first listen,other,144,475,453,122,0.02
+melancholy,mood/emotion,101,449,434,86,0.01
+heavy metal,genre,420,602,423,241,0.07
+progressive metal,genre,212,476,407,143,0.06
+chillout,mood/emotion,162,397,386,151,0.02
+emo,genre,312,481,382,213,0.06
+thrash metal,genre,219,473,381,127,0.04
+60s,era,280,440,350,190,0.06
+folk rock,genre,138,342,308,104,0.01
+symphonic metal,genre,134,323,272,83,0.04
+gothic metal,genre,148,310,265,103,0.04
+doom metal,genre,154,315,258,97,0.04
+jazz,genre,272,323,251,200,0.04
+love,theme,158,271,248,135,0.04
+black metal,genre,146,322,241,65,0.06
+power metal,genre,132,266,225,91,0.04
+female fronted metal,instrumentation/production,83,244,223,62,0.02
+pop rock,genre,208,237,219,190,0.05
+funk,genre,234,240,210,204,0.05
+cover,instrumentation/production,319,247,207,279,0.04
+2019,era,81,206,205,80,0.01
+electropop,genre,192,222,203,173,0.03
+oldies,era,143,229,189,103,0.04
+country,genre,210,247,185,148,0.06
+alternative metal,genre,121,188,175,108,0.03
+beautiful,mood/emotion,133,176,171,128,0.02
+hip hop,genre,577,546,159,190,0.17
+death metal,genre,207,281,154,80,0.14
+epic,mood/emotion,53,135,134,52,0.01
+pop punk,genre,204,174,117,147,0.08
+blues,genre,357,207,111,261,0.05
+disco,genre,107,121,109,95,0.03
+sexy,mood/emotion,77,119,107,65,0.02
+blues rock,genre,102,122,105,85,0.03
+melodic death metal,genre,89,117,102,74,0.07
+rap,genre,448,400,92,140,0.2
+2017,era,135,72,68,131,0.02
+australian,other,136,76,68,128,0.02
+industrial,genre,130,71,61,120,0.03
+10s,era,77,48,48,77,0.01
+2015,era,79,45,45,79,0.01
+piano,instrumentation/production,123,46,41,118,0.02
+nu metal,genre,94,48,40,86,0.03
+trap,genre,100,78,39,61,0.18
+party,theme,55,36,32,51,0.01
+soundtrack,genre,244,52,32,224,0.03
+reggae,genre,84,32,12,64,0.03
+sad,mood/emotion,74,7,7,74,0.01
+christian,theme,44,2,1,43,0.01
+atmospheric,mood/emotion,24,0,0,24,0.01
+catchy,mood/emotion,31,0,0,31,0.01
+chill,mood/emotion,47,0,0,47,0.01
+dreamy,mood/emotion,31,0,0,31,0.01
+happy,mood/emotion,31,0,0,31,0.01
+romantic,mood/emotion,25,0,0,25,0.01
+summer,theme,32,0,0,32,0.01

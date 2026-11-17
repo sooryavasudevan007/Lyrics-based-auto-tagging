@@ -1,0 +1,107 @@
+[
+  {
+    "objective": 1,
+    "pi": 1,
+    "status": "done",
+    "description": "Text statistics for all songs",
+    "evidence": "stylistic/features_all.csv.gz"
+  },
+  {
+    "objective": 1,
+    "pi": 2,
+    "status": "done",
+    "description": "Repetition and phonetic end-rhyme features",
+    "evidence": "stylistic/features_all.csv.gz"
+  },
+  {
+    "objective": 1,
+    "pi": 3,
+    "status": "done",
+    "description": "Stylistic-only LR with shared evaluation",
+    "evidence": "stylistic/summary_val.csv"
+  },
+  {
+    "objective": 1,
+    "pi": 4,
+    "status": "done",
+    "description": "TF-IDF + stylistic comparison by category",
+    "evidence": "stylistic/combined_minus_tfidf_per_category.csv"
+  },
+  {
+    "objective": 1,
+    "pi": 5,
+    "status": "done",
+    "description": "Feature importance by tag/category",
+    "evidence": "stylistic/importance_per_category.csv"
+  },
+  {
+    "objective": 2,
+    "pi": 1,
+    "status": "done",
+    "description": "Category-balanced error sample",
+    "evidence": "errors/review_sample.csv"
+  },
+  {
+    "objective": 2,
+    "pi": 2,
+    "status": "done",
+    "description": "Frequent missed/extra tag pairs",
+    "evidence": "errors/confused_pairs.csv"
+  },
+  {
+    "objective": 2,
+    "pi": 3,
+    "status": "done",
+    "description": "Qualitative failure-pattern analysis",
+    "evidence": "errors/review_sample.csv"
+  },
+  {
+    "objective": 2,
+    "pi": 4,
+    "status": "done",
+    "description": "Length/repetition vs. quality",
+    "evidence": "errors/quality_correlations.csv"
+  },
+  {
+    "objective": 2,
+    "pi": 5,
+    "status": "done",
+    "description": "Word contributions for selected tags",
+    "evidence": "errors/selected_tag_terms.csv"
+  },
+  {
+    "objective": 3,
+    "pi": 1,
+    "status": "done",
+    "description": "MFCC and spectral features for fixed 10k",
+    "evidence": "audio/run_info.json"
+  },
+  {
+    "objective": 3,
+    "pi": 2,
+    "status": "done",
+    "description": "Audio LR and lyrics on identical songs",
+    "evidence": "audio/summary_val.csv"
+  },
+  {
+    "objective": 3,
+    "pi": 3,
+    "status": "in progress",
+    "description": "Audio/lyrics category comparison",
+    "evidence": "audio/per_category_comparison.csv"
+  },
+  {
+    "objective": 3,
+    "pi": 4,
+    "status": "in progress",
+    "description": "Modality disagreements and examples",
+    "evidence": "audio/modality_disagreements.csv"
+  },
+  {
+    "objective": 3,
+    "pi": 5,
+    "status": "not started",
+    "description": "Pretrained audio embeddings + late fusion",
+    "evidence": "Stretch task"
+  }
+]

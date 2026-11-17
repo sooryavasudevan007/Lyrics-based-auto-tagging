@@ -1,0 +1,9 @@
+{
+  "fixed_subset_songs": 10000,
+  "available_all": 10000,
+  "required_train_val": 8412,
+  "available_train_val": 8412,
+  "subset_sha256": "634a508ebd252e908cef82e723f91fbc9fad5ab2b5c1fc1115a7620db5d57390",
+  "test_evaluated": false,
+  "status": "evaluated_on_validation"
+}

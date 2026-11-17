@@ -1,0 +1,9 @@
+category,pattern,n_review_rows
+era,era_without_explicit_cue,6
+genre,genre_lexical_overlap,6
+instrumentation/production,non_lyrical_attribute,6
+mood/emotion,mood_ambiguity_or_missing_annotation,6
+other,non_lyrical_attribute,6
+theme,explicit_theme_missed,2
+theme,metaphorical_religiosity,1
+theme,plausible_theme_missing_annotation,3

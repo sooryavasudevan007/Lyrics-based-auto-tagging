@@ -1,0 +1,31 @@
+{
+  "created_utc": "2026-11-13T12:04:22.751075+00:00",
+  "split": "val",
+  "test_evaluated": false,
+  "n_train": 57348,
+  "n_val": 13002,
+  "K": 112,
+  "seed": 575,
+  "splits_sha256": "580db07ee3a857e5f3670fdb26dec9905e283dbb32ec57cfe01dd05519b7b84f",
+  "vocab_sha256": "18dc0d0ea69d391bb3f02fc39f903786bdeb9de277a19ac404402c15b48fd51b",
+  "data_sha256": "0ee11493a93d5f20a9c3183e5643bcdfd58c72a7835e877894d712a2e0bfb91f",
+  "packages": {
+    "numpy": "2.3.5",
+    "pandas": "2.2.3",
+    "scipy": "1.17.0",
+    "scikit-learn": "1.8.0",
+    "cmudict": "1.1.3"
+  },
+  "annotation_note": "tuned_on_val thresholds and evaluation share validation; optimistic annotation estimates",
+  "fit_note": "scalers, vocabulary, and model parameters fitted on train only",
+  "model": "tfidf_style_lr",
+  "scores_sha256": "1d140424bfc5f374e684f62d16e2634d32b43c079277a70a9ec51c6fc7e2c1f5",
+  "per_category": 6,
+  "sample_rows": 36,
+  "unique_sample_songs": 36,
+  "qualitative_review_complete": true,
+  "bootstrap": 200,
+  "explanations": "Exact text-column contributions of the combined model; intercept and style contributions must also be considered.",
+  "confusion_note": "co-occurring missed/extra labels; missing tags may be annotation omissions",
+  "review_method": "Assistant qualitative inspection of each sampled full lyric and observed/predicted tags; no independent audio verification of semantic judgments."
+}
