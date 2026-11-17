@@ -1,0 +1,16 @@
+tag_a,tag_b,cosine
+hip hop,rap,0.784
+punk,punk rock,0.651
+symphonic metal,female fronted metal,0.54
+indie,indie rock,0.516
+gothic metal,symphonic metal,0.508
+gothic metal,female fronted metal,0.501
+hardcore,metalcore,0.49
+rock,alternative rock,0.452
+post hardcore,screamo,0.452
+alternative,alternative rock,0.446
+80s,new wave,0.443
+rock,alternative,0.441
+metal,heavy metal,0.438
+singer songwriter,folk,0.428
+soul,rnb,0.408

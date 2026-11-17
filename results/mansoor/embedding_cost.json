@@ -1,0 +1,12 @@
+{
+ "embedding_info": {
+  "model": "all-MiniLM-L6-v2 (fp32 ONNX, Xenova export)",
+  "chunk_tokens": 256,
+  "max_chunks": 3,
+  "n_windows": 134441,
+  "seconds": 8253.3,
+  "threads": 2
+ },
+ "chunk_emb_MB": 103.3,
+ "songs_multi_window": 43147
+}
