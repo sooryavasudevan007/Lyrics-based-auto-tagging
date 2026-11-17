@@ -98,7 +98,7 @@ Use Python 3.10 or later and install FFmpeg. Lyric experiments require locally
 processed Music4All-EN data; follow the linked restoration instructions first.
 
 ```bash
-python -m pip install -r requirements-experiments.txt
+python -m pip install -r requirements.txt
 python -m unittest discover -s tests -p 'test_experiments.py' -v
 python scripts/run_experiments.py style
 python scripts/run_experiments.py errors --per-category 6 --bootstrap 200

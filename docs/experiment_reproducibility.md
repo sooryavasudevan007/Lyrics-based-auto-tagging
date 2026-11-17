@@ -10,7 +10,7 @@ fits to, selects against, or evaluates the test labels.
 Use Python 3.10 or later, and install FFmpeg on your machine for MP3 decoding.
 
 ```bash
-python -m pip install -r requirements-experiments.txt
+python -m pip install -r requirements.txt
 python -m unittest discover -s tests -p 'test_experiments.py' -v
 ```
 

@@ -25,7 +25,7 @@ def pronunciation_dictionary():
     try:
         import cmudict
     except ImportError as exc:
-        raise RuntimeError("Install requirements-experiments.txt for phonetic rhyme extraction") from exc
+        raise RuntimeError("Install requirements.txt for phonetic rhyme extraction") from exc
     return cmudict.dict()
 
 
