@@ -7,9 +7,9 @@
 
 ---
 
-## Progress Report (Nov. 12)
+## Progress Report (Nov. 16)
 
-All results below are on the **validation** split. The test split has not been used (Section 3.4).
+Submitted as a 4-page ISMIR-format paper: [`paper/DP1_progress_report.pdf`](paper/DP1_progress_report.pdf) (LaTeX source in `paper/`). All results below are on the **validation** split. The test split has not been used (Section 3.4).
 
 ### Status
 
@@ -19,8 +19,8 @@ All results below are on the **validation** split. The test split has not been u
 | Tag categories: lexicon + documented manual review | Soorya | Done (`splits/category_overrides.csv`) |
 | Shared evaluation harness: annotation, retrieval, per-category, thresholds, bootstrap | Soorya | Done (`src/evaluate.py`, `docs/evaluation.md`); checked against scikit-learn |
 | Trivial and TF-IDF baselines | Soorya | Done (`scripts/run_baselines.py`) |
-| Sentence embeddings, classifier chains, tuning | Mansoor | In progress |
-| Stylistic features, error analysis, audio baseline | Harish | In progress; audio clips not in our Music4All-EN copy (see Section 6) |
+| Sentence embeddings, classifier chains, tuning | Mansoor | Mostly done (see *Team results* below); second encoder and TF-IDF tuning in progress |
+| Stylistic features, error analysis, audio baseline | Harish | Mostly done (see *Team results* below); audio clips for a 10k-song subset obtained; audio-vs-lyrics category comparison in progress |
 
 The frozen dataset has 83,633 songs by 11,838 artists and *K* = 112 tags; Section 2 gives the full statistics.
 
@@ -44,6 +44,25 @@ TF-IDF uses unigrams and bigrams (186,777 features, sublinear TF).
 - **Micro-F1 rewards predicting frequent tags.** The popularity baseline, which predicts *rock, pop, indie* for every song, nearly matches tuned Logistic Regression on micro-F1 (0.202 vs. 0.207) while scoring 0.009 macro-F1. This supports using macro-F1 as the primary metric.
 - **Naive Bayes is the weakest model.** Its per-tag F1 tuning picks very low thresholds that label most songs positive (Hamming loss 0.45), so tuned F1 is not a reliable comparison for weak models.
 
+### Team results (Mansoor, Harish)
+
+Validation split; per-tag thresholds (and fusion weights) tuned on validation, so these scores are optimistic.
+
+| Model | Owner | Macro-F1 | MAP | P@10 | ROC-AUC |
+|---|---|---|---|---|---|
+| TF-IDF + LR, *C* = 3 (tuned) | Mansoor | .175 | .124 | .274 | .756 |
+| Ensemble of 3 classifier chains | Mansoor | .164 | .114 | .268 | .737 |
+| MiniLM sentence embeddings + LR | Mansoor | .154 | .103 | .247 | .732 |
+| GloVe-100 mean + LR | Mansoor | .121 | .071 | .084 | .699 |
+| **Late fusion TF-IDF + MiniLM (.7/.3)** | Mansoor | **.180** | **.129** | **.287** | **.767** |
+| TF-IDF + stylistic features (*C* = 1) | Harish | .173 | .124 | – | – |
+
+- **RQ2 (embeddings vs. TF-IDF):** embeddings are worse so far (macro-F1 −.021, 95% CI [−.026, −.016]); fusing them with TF-IDF gives a small gain (+.004 [+.001, +.009]).
+- **RQ3 (classifier chains):** chains do not beat binary relevance so far (−.011 [−.015, −.009]), in every tag-frequency band.
+- **Stylistic features:** 15 text-statistic, repetition and rhyme features add a small gain over the *C* = 1 TF-IDF baseline (.173 vs. .165 macro-F1).
+- **Audio (10k-song subset, 6,857 train / 1,555 validation songs):** MFCC/spectral LR reaches macro-F1/MAP .149/.103, versus .127/.098 for TF-IDF + stylistic features on the same songs.
+- **Error analysis:** genre overlap, non-lyrical attributes and missing tags recur; lyric length correlates weakly with per-song F1 (Spearman .215).
+
 ### First look at H1 (Logistic Regression, tuned thresholds)
 
 | Category | Tags | Macro-F1 | MAP | ROC-AUC |
@@ -61,11 +80,14 @@ TF-IDF uses unigrams and bigrams (186,777 features, sublinear TF).
 - **Caveat: MAP and F1 depend on tag prevalence.** Mood tags are rare (24–114 validation positives each, versus 2,000+ for *pop*), and both metrics fall with prevalence even when ranking quality is unchanged. ROC-AUC does not, so from now on we also report it per category as a **secondary** comparison. Macro-F1 and MAP remain the primary metrics as planned; we add this analysis after seeing the baseline, and say so.
 - **Open question for the next phase:** do sentence embeddings (RQ2) close the gap for mood tags, whose meaning is often expressed indirectly rather than by keywords?
 
-### Next steps (to Nov. 20)
+### Next steps
 
-- **Soorya:** per-tag and per-category reporting with bootstrap confidence intervals; most informative TF-IDF terms per tag; learning curves (Objective 3).
-- **Mansoor:** sentence-embedding models and classifier chains with the shared harness; per-tag threshold tuning across all models.
-- **Harish:** stylistic features; error analysis of mood tags; obtain audio clips for the 10k-song subset or move the audio baseline to stretch by Nov. 13.
+- **Nov. 17–20:**
+  - **Soorya:** leakage check (artist-disjoint vs. song-level split), paired bootstrap tests for RQ2 and RQ3, per-tag Benjamini–Hochberg tests.
+  - **Mansoor:** TF-IDF tuning (Obj. 3 PI2) and a second sentence encoder (Obj. 1 PI3).
+  - **Harish:** audio vs. lyrics by tag category and the tags where they disagree most (Obj. 3 PI3–PI4).
+- **Nov. 21–27:** one test-set evaluation of the frozen models.
+- **Nov. 28–Dec. 4:** final ISMIR paper.
 
 ---
 
@@ -275,7 +297,7 @@ Music4All [11] aligns audio clips, lyrics, metadata, genre labels, and user tags
 | Oct. 15–19 | Design specification | Finalize scope and research questions, literature review, README v1 |
 | Oct. 20–Nov. 3 | Data pipeline (slipped: dataset access) | Load Music4All, filter by language, clean lyrics, artist-disjoint stratified splits, then freeze tag vocabulary and categories on the training split; exploratory statistics |
 | Oct. 31–Nov. 12 | Baselines | TF-IDF + one-vs-rest LR/SVM/NB, shared evaluation harness (annotation + retrieval metrics) |
-| **Nov. 12** | **Progress report** | 3–4 page ISMIR-format PDF (`paper/`) and README update: dataset, baselines, per-category results, individual status |
+| **Nov. 16** (postponed from Nov. 12) | **Progress report** | 3–4 page ISMIR-format PDF (`paper/`) and README update: dataset, baselines, per-category results, individual status |
 | Nov. 7–20 | Extended models | Sentence embeddings, classifier chains, stylistic features, audio baseline (10k-song subset), hyperparameter tuning |
 | Nov. 21–27 | Analysis | Per-category and per-tag analysis, error analysis, informative terms, runtime/scaling stats |
 | Nov. 28–Dec. 4 | Final report | ISMIR-format LaTeX paper, cleaned repository, reproducibility instructions |
@@ -287,7 +309,7 @@ Music4All [11] aligns audio clips, lyrics, metadata, genre labels, and user tags
 
 **Dependency risk.** All models are evaluated with Soorya's shared harness, so a late harness would block Mansoor and Harish. To prevent this, the harness's interface (score matrix in, metrics table out) and the frozen splits are committed by Oct. 30, with a stub that computes micro/macro F1. Mansoor and Harish build against that interface in parallel, and the retrieval metrics are added by Nov. 6 without changing it.
 
-**Audio data risk.** Our Music4All-EN copy has no audio clips, so the audio baseline depends on obtaining the 30-second clips from the full Music4All release for the 10k-song subset. If the clips are not available by Nov. 13, the audio baseline moves to the stretch list and RQ1 is answered by comparing lyrics models against the trivial baselines and across tag categories only.
+**Audio data.** Our Music4All-EN copy has no audio clips; Harish obtained the 30-second clips for the 10k-song subset separately, so the MFCC audio baseline is in the core plan.
 
 ---
 

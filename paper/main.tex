@@ -37,7 +37,7 @@ Project DP1 progress report. Code and data splits:
 \maketitle
 
 \begin{abstract}
-We study how much of a song's social-tag profile can be predicted from its lyrics alone, framing auto-tagging as multi-label text classification on the English subset of Music4All. This report describes the frozen dataset (83,633 songs, 11,838 artists, 112 tags), an artist-disjoint and label-stratified split protocol that avoids artist leakage, a shared evaluation harness covering both annotation and retrieval, and the first baselines. TF-IDF with logistic regression ranks songs for tags far better than chance (MAP 0.122 vs.\ 0.028, mean ROC-AUC 0.76) but annotation is weak because most tags are rare. Contrary to our first hypothesis, genre tags are predicted best and mood tags worst, partly because mood tags are rare in Music4All. We report each member's progress on their objectives and set basic, expected and advanced goals for the final report.
+We study how much of a song's social-tag profile can be predicted from its lyrics alone, framing auto-tagging as multi-label text classification on the English subset of Music4All. This report describes the frozen dataset (83,633 songs, 11,838 artists, 112 tags), an artist-disjoint and label-stratified split protocol that avoids artist leakage, a shared evaluation harness covering both annotation and retrieval, the first baselines, and comparisons with sentence embeddings and classifier chains. TF-IDF with logistic regression ranks songs for tags far better than chance (MAP 0.122 vs.\ 0.028, mean ROC-AUC 0.76) but annotation is weak because most tags are rare. Contrary to our first hypothesis, genre tags are predicted best and mood tags worst, partly because mood tags are rare in Music4All. Sentence embeddings and classifier chains do not beat TF-IDF so far, while a TF-IDF--embedding fusion and stylistic features add small gains. We report each member's progress on their objectives and set basic, expected and advanced goals for the final report.
 \end{abstract}
 
 %=====================================================================
@@ -47,7 +47,7 @@ Music auto-tagging assigns descriptive labels such as genre, mood, theme or era 
 
 Our research questions are: \textbf{RQ1} how well lyrics predict tags, by tag category; \textbf{RQ2} whether sentence embeddings~\cite{reimers2019sbert} beat TF-IDF~\cite{salton1988term}; and \textbf{RQ3} whether classifier chains~\cite{read2011chains} beat independent per-tag classifiers. Hypothesis \textbf{H1} predicted that mood and theme tags would be easier to predict from lyrics than instrumentation/production tags.
 
-So far we have (i) frozen a leakage-free dataset, (ii) built a shared evaluation harness, and (iii) run trivial and TF-IDF baselines, which give a first, negative, answer to H1.
+So far we have (i) frozen a leakage-free dataset, (ii) built a shared evaluation harness, (iii) run trivial and TF-IDF baselines, which give a first, negative, answer to H1, (iv) compared embeddings and classifier chains with the baselines, which answers RQ2 and RQ3 negatively so far, and (v) added stylistic and audio features.
 
 %=====================================================================
 \section{Related Work}\label{sec:related}
@@ -117,7 +117,7 @@ LR & \textbf{.165} & \textbf{.207} & \textbf{.122} & \textbf{.274} & \textbf{.75
 \label{tab:baselines}
 \end{table}
 
-\textbf{Lyrics carry tag information.} LR is the best model on every metric (\tabref{tab:baselines}): MAP is 4.4$\times$ the random baseline and P@10 rises from .03 to .27. The fixed 0.5 threshold is unusable because the average tag is on about 3\% of songs, so per-tag thresholds are essential. Micro-F1 is misleading: predicting \emph{rock, pop, indie} for every song nearly matches LR on micro-F1 (.202 vs.\ .207) while scoring .009 macro-F1, which supports macro-F1 as our primary metric.
+\textbf{Lyrics carry tag information.} LR is the best baseline on every metric (\tabref{tab:baselines}): MAP is 4.4$\times$ the random baseline and P@10 rises from .03 to .27. The fixed 0.5 threshold is unusable because the average tag is on about 3\% of songs, so per-tag thresholds are essential. Micro-F1 is misleading: predicting \emph{rock, pop, indie} for every song nearly matches LR on micro-F1 (.202 vs.\ .207) while scoring .009 macro-F1, which supports macro-F1 as our primary metric.
 
 \begin{figure*}[t]
 \centering
@@ -146,18 +146,18 @@ Mood/emotion & 13 & .022 & .021 & .703 \\
 
 \textbf{H1 is not supported so far.} On the planned metrics the mood + theme group scores below instrumentation/production (macro-F1 .031 vs.\ .121; MAP .041 vs.\ .076), and level on AUC (.727 vs.\ .731; \tabref{tab:categories}). Genre is predicted best: by AUC the top tags are \emph{death metal}, \emph{rap} and \emph{trap} (.96--.97), followed by other metal sub-genres and \emph{hip hop}, all genres with distinctive vocabulary (\figref{fig:pertag}). At the bottom are recent-year tags (\emph{10s}, \emph{2015}, \emph{2019}; AUC .52--.56), nationality tags (\emph{canadian}, \emph{swedish}) and mood tags (\emph{chill}, \emph{chillout}, \emph{mellow}). Part of the gap is prevalence: mood tags have 24--114 validation positives against 2,455 for \emph{pop}, and MAP and F1 fall with prevalence even when ranking quality does not, whereas AUC does not. We therefore add per-category AUC as a \emph{secondary} comparison, noting that this was decided after seeing the baseline.
 
-\textbf{Informative terms.} The highest-weighted LR terms are topical for well-predicted tags: \emph{blood, death, flesh, pain} for \emph{death metal}; \emph{god, lord, praise, jesus} for \emph{christian} (AUC .89); \emph{summer, sun, beach} for \emph{summer}; and profanity and slang for \emph{rap}. For \emph{sad} they are diffuse function words of loss (\emph{never, anymore, sorry}), consistent with mood being expressed indirectly. \emph{Female vocalists} is predicted from \emph{he, him, my man}: lyrics reveal the singer's perspective rather than any sound.
+\textbf{Informative terms.} The top LR terms are topical for well-predicted tags (\emph{blood, death, flesh} for \emph{death metal}; \emph{god, lord, jesus} for \emph{christian}, AUC .89), but diffuse for \emph{sad} (\emph{never, anymore, sorry}), consistent with mood being expressed indirectly.
 
 \textbf{Data size.} Learning curves (\figref{fig:lc}) are still rising at full size: macro AUC grows from .690 with 10\% of the training artists (6.4k songs) to .759 with all 57k, and fit time grows roughly linearly (3\,s to 41\,s). Mood + theme gains more (.640 to .727) than genre (.724 to .790), so part of the mood gap may be a lack of training examples rather than of lyrical signal.
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.85\columnwidth]{figs/learning_curve.png}
-\caption{Validation macro ROC-AUC of TF-IDF + LR against training-set size (training artists subsampled at 10, 25, 50 and 100\%).}
+\includegraphics[width=0.7\columnwidth]{figs/learning_curve.png}
+\caption{Validation macro AUC of TF-IDF + LR vs.\ training size (10--100\% of training artists).}
 \label{fig:lc}
 \end{figure}
 
-\textbf{Lessons learned.} Naive Bayes is weak (AUC .60) and per-tag F1 tuning drives its thresholds so low that most songs are labelled positive (Hamming loss .45), so tuned F1 is unreliable for weak models. Obtaining the dataset took longer than planned, and our Music4All-EN copy has no audio, which puts the audio baseline at risk.
+\textbf{Lessons learned.} For weak models such as Naive Bayes (AUC .60), per-tag F1 tuning labels most songs positive (Hamming loss .45), so tuned F1 is unreliable. Music4All-EN has no audio, so clips for a 10k-song subset were obtained separately.
 
 %=====================================================================
 \section{Individual Status Reports}\label{sec:status}
@@ -174,33 +174,51 @@ Soorya & 1 Dataset & \done & \done & \done & \done & \done \\
        & 2 Baselines + harness & \done & \done & \done & \done & \done \\
        & 3 Per-tag analysis & \done & \done & \done & \done & \prog \\
 \midrule
-Mansoor & 1 Embeddings & \tbd{?} & \tbd{?} & \tbd{?} & \tbd{?} & \tbd{?} \\
-        & 2 Classifier chains & \tbd{?} & \tbd{?} & \tbd{?} & \tbd{?} & \tbd{?} \\
-        & 3 Tuning & \tbd{?} & \tbd{?} & \tbd{?} & \tbd{?} & \tbd{?} \\
+Mansoor & 1 Embeddings & \done & \done & \prog & \done & \nost \\
+        & 2 Classifier chains & \done & \done & \done & \done & \done \\
+        & 3 Tuning & \done & \prog & \done & \done & \done \\
 \midrule
-Harish & 1 Stylistic features & \tbd{?} & \tbd{?} & \tbd{?} & \tbd{?} & \tbd{?} \\
-       & 2 Error analysis & \tbd{?} & \tbd{?} & \tbd{?} & \tbd{?} & \tbd{?} \\
-       & 3 Audio baseline & \tbd{?} & \tbd{?} & \tbd{?} & \tbd{?} & \tbd{?} \\
+Harish & 1 Stylistic features & \done & \done & \done & \done & \done \\
+       & 2 Error analysis & \done & \done & \done & \done & \done \\
+       & 3 Audio baseline & \done & \done & \prog & \prog & \nost \\
 \bottomrule
 \end{tabular}
 \caption{Performance indicators (B = basic, E = expected, A = advanced): \done\ done, \prog\ in progress, \nost\ not started. Full PI definitions are in the repository README.}
 \label{tab:pis}
 \end{table}
 
-\textbf{Soorya Vasudevan} (data, baselines, evaluation). All basic and expected PIs are complete (\tabref{tab:pis}). \emph{Objective 1:} Music4All-EN is loaded and joined on song ID; filtering statistics, tag normalization, frequency and co-occurrence plots, artist-disjoint stratified splits (with a song-level split kept for the leakage check) and the documented category mapping are in the repository. \emph{Objective 2:} TF-IDF features, the popularity and random baselines, three classifiers with timing, and the retrieval metrics are implemented; the shared harness (score matrix in, metrics table out) is used by all members. \emph{Objective 3:} per-tag results sorted by AUC (\figref{fig:pertag}), informative terms, the category comparison (\tabref{tab:categories}) and learning curves (\figref{fig:lc}) are done. PI5 is in progress: bootstrap CIs are computed, and per-tag significance tests with Benjamini--Hochberg correction remain. \emph{Next:} the leakage check (artist-disjoint vs.\ song-level split) and paired bootstrap tests for RQ2 and RQ3.
+\textbf{Soorya Vasudevan} (data, baselines, evaluation). All basic and expected PIs are complete (\tabref{tab:pis}). \emph{Objective 1:} the dataset, filtering statistics, tag normalization, artist-disjoint splits (plus a song-level split for the leakage check) and the documented category mapping are in the repository (\secref{sec:data}). \emph{Objective 2:} TF-IDF and trivial baselines, three timed classifiers and the shared harness used by all members are done (\secref{sec:results}). \emph{Objective 3:} sorted per-tag results, informative terms, the category comparison and learning curves are done; for PI5, bootstrap CIs are computed and per-tag Benjamini--Hochberg tests remain. \emph{Next:} the leakage check and paired bootstrap tests for RQ2 and RQ3.
 
-\textbf{Mansoor Ali} (embeddings, classifier chains, tuning). \tbd{Mansoor: 3--4 sentences on progress for each objective, results so far, and next steps.}
+\begin{table}[t]
+\centering\small
+\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+Model & Ma-F1 & MAP & P@10 & AUC \\
+\midrule
+TF-IDF LR ($C{=}3$) & .175 & .124 & .274 & .756 \\
+Chain ensemble (3) & .164 & .114 & .268 & .737 \\
+MiniLM, first window & .154 & .103 & .247 & .732 \\
+GloVe-100 mean & .121 & .071 & .084 & .699 \\
+Late fusion (.7/.3) & \textbf{.180} & \textbf{.129} & \textbf{.287} & \textbf{.767} \\
+\bottomrule
+\end{tabular}
+\caption{Mansoor's models (validation; thresholds and fusion weights tuned on validation, so optimistic).}
+\label{tab:mansoor}
+\end{table}
 
-\textbf{Harish Pugazhenthi Sasikala} (stylistic features, error analysis, audio baseline). \tbd{Harish: 3--4 sentences on progress for each objective, results so far, and next steps, including whether the audio clips for the 10k-song subset have been obtained.}
+\textbf{Mansoor Ali} (embeddings, classifier chains, tuning). All results use the frozen splits and shared harness, on validation (\tabref{tab:mansoor}). \emph{Objective 1:} all 83,633 lyrics are encoded with all-MiniLM-L6-v2~\cite{reimers2019sbert} (ONNX export of the same weights) in 256-token windows, at most three per song (134k windows, 2.3\,h on two CPU threads). One-vs-rest LR on the embeddings is worse than TF-IDF (macro-F1 .154 vs.\ .175; MAP .103 vs.\ .124; paired artist-bootstrap difference in macro-F1 $-$.021, 95\% CI [$-$.026, $-$.016]), so for RQ2 embeddings do not beat TF-IDF so far. Mean or max pooling over windows does not help (.152, .151), and static GloVe vectors~\cite{pennington2014glove} are worse (.121). PI3 is in progress because we have only one sentence encoder so far; fine-tuning (PI5) has not started. \emph{Objective 2:} the strongest co-occurrence is \emph{hip hop}--\emph{rap} (cosine .78). Classifier chains with an LR base do not beat binary relevance: one chain scores .156 (frequency order) to .160 (random orders), and an ensemble of three random chains .164 against .175 for binary relevance (difference $-$.011 [$-$.015, $-$.009], MAP $-$.010), losing in every tag-frequency band, so for RQ3 chains do not help so far. \emph{Objective 3:} a grid over the LR regularization strength picks $C{=}3$ (macro-F1 .175 vs.\ .165 at $C{=}1$). Per-tag thresholds lift macro-F1 at $C{=}3$ from .030 (fixed 0.5) to .175. A late fusion of the TF-IDF and embedding scores (weights .7/.3, chosen on validation) is our best model, with a small gain over TF-IDF (macro-F1 +.004 [+.001, +.009]; MAP +.004 [+.002, +.007]). \emph{Next:} tune the TF-IDF settings (PI2), add a second sentence encoder (PI3), and score the frozen models once on the test split.
+
+\textbf{Harish Pugazhenthi Sasikala} (stylistic features, error analysis, audio baseline). \emph{Objective 1:} I extracted 15 text-statistic, repetition and phonetic-rhyme features for 83,633 songs. TF-IDF+style reached validation macro-F1/MAP .173/.124, versus .165/.122 for the $C{=}1$ TF-IDF baseline. Feature-importance analysis is complete; next is final tuning. \emph{Objective 2:} I reviewed 36 category-balanced error cases and generated tag-pair and word-contribution analyses. Genre overlap, non-lyrical attributes and missing tags recur; the Spearman correlation between lyric length and per-song F1 is .215. Next is reviewing Mansoor's fusion model. \emph{Objective 3:} I verified all 10,000 clips and extracted 53 MFCC/spectral features. On the same 6,857 training and 1,555 validation songs, audio LR reached macro-F1/MAP .149/.103 versus .127/.098 for matched TF-IDF+style. Pretrained audio/fusion remain stretch; test scoring is pending.
 
 %=====================================================================
 \section{Revised Plan and Final Goals}\label{sec:plan}
 
-Our original timeline slipped by about a week because of dataset access; the remaining schedule is: Nov.~13--20 embeddings, classifier chains and stylistic features; Nov.~21--27 tuning, error analysis and a single test-set evaluation of the frozen models; Nov.~28--Dec.~4 final paper. Goals for the final report:
+Despite a one-week slip in dataset access, the extended models are done. Remaining: Nov.~17--20 TF-IDF tuning, a second encoder, audio vs.\ lyrics by category; Nov.~21--27 leakage check, paired tests, one test-set run; Nov.~28--Dec.~4 final paper. Final-report goals:
 
 \textbf{Basic:} the frozen dataset, shared harness and TF-IDF baselines, plus a sentence-embedding model, all evaluated once on the test split, with per-category results answering RQ1 and RQ2.
 
-\textbf{Expected:} classifier chains vs.\ binary relevance (RQ3), tuned thresholds for all models, stylistic features, error analysis of mood tags, bootstrap CIs with paired tests per research question, the leakage check, and an MFCC audio baseline on a 10k-song subset if clips are available by Nov.~13.
+\textbf{Expected:} classifier chains vs.\ binary relevance (RQ3), tuned thresholds for all models, stylistic features, error analysis of mood tags, bootstrap CIs with paired tests per research question, the leakage check, and the MFCC audio baseline on the 10k-song subset (clips now obtained).
 
 \textbf{Advanced:} a fine-tuned transformer, late fusion of TF-IDF and embedding models, a pretrained audio embedding with audio--lyrics fusion, and per-tag significance tests with Benjamini--Hochberg correction.
 
