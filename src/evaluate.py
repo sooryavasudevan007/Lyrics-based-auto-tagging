@@ -162,3 +162,72 @@ def bootstrap_ci(Y, S, pred, ids, artists, n_boot=1000, seed=0, alpha=0.05):
     stats = np.array(stats)
     lo, hi = np.percentile(stats, [100 * alpha / 2, 100 * (1 - alpha / 2)], axis=0)
     return {"macro_F1_CI": (float(lo[0]), float(hi[0])), "MAP_CI": (float(lo[1]), float(hi[1]))}
+
+
+# ------------------------------------------------------------------ paired tests
+def benjamini_hochberg(p):
+    """Benjamini-Hochberg adjusted p-values (q-values); NaNs are left as NaN."""
+    p = np.asarray(p, dtype=float)
+    q = np.full_like(p, np.nan)
+    ok = ~np.isnan(p)
+    m = ok.sum()
+    if m == 0:
+        return q
+    order = np.argsort(p[ok])
+    ranked = p[ok][order] * m / np.arange(1, m + 1)
+    ranked = np.minimum.accumulate(ranked[::-1])[::-1]
+    out = np.empty(m)
+    out[order] = np.minimum(ranked, 1.0)
+    q[ok] = out
+    return q
+
+
+def paired_bootstrap(Y, S_a, P_a, S_b, P_b, ids, artists, n_boot=1000, seed=0,
+                     alpha=0.05, per_tag=False):
+    """Paired artist-bootstrap comparison of model A minus model B on the SAME songs
+    (README 3.3). Returns the mean difference, 95% CI and two-sided bootstrap
+    p-value for macro-F1 and MAP; with per_tag=True also per-tag AP differences
+    with p-values and Benjamini-Hochberg q-values (FDR 0.05)."""
+    rng = np.random.default_rng(seed)
+    Y = np.asarray(Y, bool)
+    S_a, S_b = np.asarray(S_a, float), np.asarray(S_b, float)
+    P_a, P_b = np.asarray(P_a, bool), np.asarray(P_b, bool)
+    ids = np.asarray(ids, dtype=object)
+    codes, uniq = pd.factorize(pd.Series(artists).str.lower())
+    rows_of = [np.flatnonzero(codes == a) for a in range(len(uniq))]
+
+    def stats(rows, bids):
+        _, sa = annotation_metrics(Y[rows], P_a[rows])
+        _, sb = annotation_metrics(Y[rows], P_b[rows])
+        ap_a = retrieval_metrics(Y[rows], S_a[rows], bids, with_auc=False)["AP"]
+        ap_b = retrieval_metrics(Y[rows], S_b[rows], bids, with_auc=False)["AP"]
+        return sa["macro_F1"] - sb["macro_F1"], np.nanmean(ap_a) - np.nanmean(ap_b), ap_a - ap_b
+
+    all_rows = np.arange(len(Y))
+    obs_f1, obs_map, obs_tag = stats(all_rows, ids)
+    d_f1, d_map, d_tag = [], [], []
+    for _ in range(n_boot):
+        pick = np.concatenate([rows_of[a] for a in rng.integers(0, len(uniq), len(uniq))])
+        bids = np.char.add(ids[pick].astype(str), np.arange(len(pick)).astype(str))
+        f, m, t = stats(pick, bids)
+        d_f1.append(f); d_map.append(m)
+        if per_tag:
+            d_tag.append(t)
+
+    def summarise(obs, draws):
+        draws = np.asarray(draws, float)
+        lo, hi = np.nanpercentile(draws, [100 * alpha / 2, 100 * (1 - alpha / 2)], axis=0)
+        # two-sided p: how often the resampled difference falls on the other side of 0
+        p = 2 * np.minimum(np.nanmean(draws <= 0, axis=0), np.nanmean(draws >= 0, axis=0))
+        return obs, lo, hi, np.minimum(p, 1.0)
+
+    out = {}
+    for name, obs, draws in (("macro_F1", obs_f1, d_f1), ("MAP", obs_map, d_map)):
+        o, lo, hi, p = summarise(obs, draws)
+        out[name] = {"diff": float(o), "CI": (float(lo), float(hi)), "p": float(p)}
+    if per_tag:
+        o, lo, hi, p = summarise(obs_tag, d_tag)
+        out["per_tag"] = pd.DataFrame({"AP_diff": o, "CI_low": lo, "CI_high": hi,
+                                       "p": p, "q_BH": benjamini_hochberg(p)})
+    out["n_boot"] = n_boot
+    return out

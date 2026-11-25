@@ -17,6 +17,13 @@ res.per_category   # one row per category, plus the "mood+theme" group used for 
 th = tune_thresholds(val.Y, S)            # README 3.4 (per tag; global for < 20 positives)
 res_tuned = evaluate(val.Y, S, val.ids, val.tags, load_categories(), thresholds=th)
 ci = bootstrap_ci(val.Y, S, S >= 0.5, val.ids, val.artists, n_boot=1000)
+
+# Compare two models on the same songs (paired artist bootstrap):
+from src.evaluate import paired_bootstrap
+r = paired_bootstrap(val.Y, S_a, S_a >= th_a, S_b, S_b >= th_b, val.ids, val.artists,
+                     n_boot=1000, per_tag=True)
+r["macro_F1"], r["MAP"]   # diff, 95% CI, two-sided p
+r["per_tag"]              # per-tag AP diff, CI, p and Benjamini-Hochberg q
 ```
 
 Checked against scikit-learn: micro/macro F1, Hamming loss and MAP match

@@ -1,0 +1,113 @@
+tag,category,n_pos,AP_diff,CI_low,CI_high,p,q_BH,significant_BH,winner
+pop punk,genre,204,0.064,0.0075,0.1082,0.018,0.0517,False,no reliable difference
+folk rock,genre,138,0.048,0.0062,0.0868,0.0,0.0,True,tfidf_lr
+emo,genre,312,0.0448,0.0231,0.0787,0.0,0.0,True,tfidf_lr
+melodic death metal,genre,89,0.0441,0.0057,0.0957,0.008,0.0242,True,tfidf_lr
+folk,genre,750,0.0408,0.0161,0.0689,0.0,0.0,True,tfidf_lr
+singer songwriter,genre,878,0.0403,0.0141,0.0686,0.0,0.0,True,tfidf_lr
+post hardcore,genre,450,0.0386,0.0117,0.0642,0.004,0.0132,True,tfidf_lr
+sexy,mood/emotion,77,0.0379,0.0005,0.0667,0.038,0.0946,False,no reliable difference
+pop,genre,2455,0.0359,0.0237,0.0473,0.0,0.0,True,tfidf_lr
+screamo,genre,194,0.0317,0.0126,0.0569,0.0,0.0,True,tfidf_lr
+hardcore,genre,407,0.0288,-0.0017,0.064,0.072,0.1522,False,no reliable difference
+oldies,era,143,0.0274,-0.011,0.0722,0.156,0.2608,False,no reliable difference
+80s,era,701,0.0268,0.0149,0.0421,0.0,0.0,True,tfidf_lr
+dance,genre,756,0.0268,0.0002,0.05,0.05,0.1191,False,no reliable difference
+electronic,genre,1273,0.0266,0.0156,0.0372,0.0,0.0,True,tfidf_lr
+female vocalists,instrumentation/production,1545,0.0263,0.0141,0.04,0.0,0.0,True,tfidf_lr
+nu metal,genre,94,0.0252,0.0055,0.0909,0.0,0.0,True,tfidf_lr
+blues,genre,357,0.0241,-0.0044,0.0696,0.094,0.1815,False,no reliable difference
+rnb,genre,535,0.0228,0.0034,0.0434,0.02,0.0546,False,no reliable difference
+love,theme,158,0.0223,0.0124,0.0382,0.0,0.0,True,tfidf_lr
+summer,theme,32,0.0223,0.0044,0.0599,0.0,0.0,True,tfidf_lr
+indie rock,genre,1039,0.0212,0.011,0.0318,0.0,0.0,True,tfidf_lr
+cover,instrumentation/production,319,0.021,0.0077,0.0371,0.0,0.0,True,tfidf_lr
+death metal,genre,207,0.0208,-0.0439,0.0786,0.574,0.6838,False,no reliable difference
+alternative rock,genre,1116,0.0206,0.0064,0.0392,0.004,0.0132,True,tfidf_lr
+catchy,mood/emotion,31,0.0205,0.0015,0.1036,0.004,0.0132,True,tfidf_lr
+indie,genre,2173,0.0198,0.0105,0.0305,0.0,0.0,True,tfidf_lr
+soul,genre,684,0.0189,-0.0066,0.0411,0.146,0.2478,False,no reliable difference
+rock,genre,3308,0.0189,0.0112,0.0266,0.0,0.0,True,tfidf_lr
+industrial,genre,130,0.0188,0.0046,0.0485,0.0,0.0,True,tfidf_lr
+punk,genre,383,0.0175,0.0024,0.042,0.02,0.0546,False,no reliable difference
+70s,era,420,0.0165,0.0021,0.0336,0.034,0.0865,False,no reliable difference
+acoustic,instrumentation/production,348,0.0164,0.005,0.036,0.006,0.0187,True,tfidf_lr
+metalcore,genre,383,0.0161,-0.0109,0.0419,0.266,0.3979,False,no reliable difference
+indie pop,genre,530,0.0157,0.0075,0.0259,0.0,0.0,True,tfidf_lr
+shoegaze,genre,236,0.0153,0.0049,0.0317,0.0,0.0,True,tfidf_lr
+progressive metal,genre,212,0.0149,-0.0099,0.0571,0.256,0.3979,False,no reliable difference
+new wave,genre,368,0.0145,0.0037,0.0285,0.006,0.0187,True,tfidf_lr
+post punk,genre,311,0.0138,0.0055,0.027,0.0,0.0,True,tfidf_lr
+punk rock,genre,210,0.0129,-0.0038,0.0492,0.23,0.368,False,no reliable difference
+dream pop,genre,249,0.0121,0.004,0.0259,0.0,0.0,True,tfidf_lr
+experimental,genre,417,0.012,0.0043,0.0223,0.0,0.0,True,tfidf_lr
+alternative,genre,1733,0.0117,0.0046,0.0199,0.0,0.0,True,tfidf_lr
+alternative metal,genre,121,0.0117,-0.0058,0.0623,0.284,0.4078,False,no reliable difference
+electropop,genre,192,0.011,0.0044,0.0229,0.0,0.0,True,tfidf_lr
+female fronted metal,instrumentation/production,83,0.011,-0.04,0.0646,0.424,0.5396,False,no reliable difference
+psychedelic,genre,208,0.0108,0.0041,0.0278,0.004,0.0132,True,tfidf_lr
+progressive rock,genre,316,0.0106,-0.0095,0.0338,0.414,0.533,False,no reliable difference
+male vocalists,instrumentation/production,99,0.0106,0.0045,0.0196,0.0,0.0,True,tfidf_lr
+epic,mood/emotion,53,0.01,0.0008,0.0546,0.004,0.0132,True,tfidf_lr
+reggae,genre,84,0.0098,-0.0375,0.0468,0.902,0.9309,False,no reliable difference
+chillout,mood/emotion,162,0.0093,0.0016,0.0223,0.0,0.0,True,tfidf_lr
+doom metal,genre,154,0.0091,-0.043,0.0747,0.674,0.7625,False,no reliable difference
+ballad,genre,81,0.0085,-0.0029,0.016,0.108,0.192,False,no reliable difference
+psychedelic rock,genre,115,0.008,0.0021,0.0252,0.002,0.0077,True,tfidf_lr
+australian,other,136,0.0079,0.0001,0.0239,0.048,0.1169,False,no reliable difference
+love at first listen,other,144,0.0078,0.0009,0.0172,0.03,0.08,False,no reliable difference
+sad,mood/emotion,74,0.0076,-0.0017,0.019,0.106,0.1915,False,no reliable difference
+hard rock,genre,530,0.0068,-0.0058,0.02,0.288,0.4083,False,no reliable difference
+electronica,genre,110,0.0062,-0.0006,0.014,0.078,0.1618,False,no reliable difference
+post rock,genre,83,0.006,-0.0008,0.0138,0.086,0.172,False,no reliable difference
+grunge,genre,158,0.0055,-0.036,0.0295,0.654,0.7474,False,no reliable difference
+soft rock,genre,77,0.0053,-0.0022,0.0135,0.134,0.2309,False,no reliable difference
+soundtrack,genre,244,0.0053,-0.0172,0.0271,0.546,0.6647,False,no reliable difference
+90s,era,408,0.0052,-0.0054,0.0177,0.342,0.456,False,no reliable difference
+trip hop,genre,139,0.005,-0.0004,0.0153,0.094,0.1815,False,no reliable difference
+ambient,genre,136,0.0048,0.0005,0.0111,0.034,0.0865,False,no reliable difference
+2018,era,191,0.0047,-0.0003,0.0164,0.07,0.1508,False,no reliable difference
+pop rock,genre,208,0.0046,-0.0103,0.0196,0.508,0.6252,False,no reliable difference
+fip,other,245,0.0043,-0.0017,0.0105,0.122,0.2135,False,no reliable difference
+synthpop,genre,355,0.0041,-0.0023,0.0101,0.19,0.3084,False,no reliable difference
+beautiful,mood/emotion,133,0.0039,0.0015,0.0069,0.002,0.0077,True,tfidf_lr
+lo fi,instrumentation/production,194,0.0034,-0.0028,0.0078,0.18,0.2965,False,no reliable difference
+metal,genre,832,0.0031,-0.0192,0.0303,0.698,0.7818,False,no reliable difference
+melancholy,mood/emotion,101,0.003,-0.0067,0.0106,0.402,0.5235,False,no reliable difference
+mellow,mood/emotion,114,0.003,0.0006,0.0066,0.012,0.0354,True,tfidf_lr
+indie folk,genre,87,0.0029,-0.0003,0.0108,0.07,0.1508,False,no reliable difference
+british,other,750,0.0025,-0.0076,0.0142,0.58,0.6838,False,no reliable difference
+2019,era,81,0.0024,0.0007,0.0047,0.0,0.0,True,tfidf_lr
+happy,mood/emotion,31,0.0022,-0.0033,0.0076,0.31,0.4234,False,no reliable difference
+piano,instrumentation/production,123,0.002,-0.0062,0.0084,0.56,0.6744,False,no reliable difference
+garage rock,genre,114,0.0019,-0.0048,0.0085,0.498,0.6197,False,no reliable difference
+dreamy,mood/emotion,31,0.0018,-0.0004,0.0065,0.106,0.1915,False,no reliable difference
+romantic,mood/emotion,25,0.0017,-0.0147,0.0109,0.632,0.7297,False,no reliable difference
+chill,mood/emotion,47,0.0011,-0.0,0.0031,0.056,0.128,False,no reliable difference
+atmospheric,mood/emotion,24,0.0011,-0.0001,0.0041,0.106,0.1915,False,no reliable difference
+classic rock,genre,740,0.0009,-0.0148,0.0195,0.864,0.9216,False,no reliable difference
+jazz,genre,272,0.0006,-0.0287,0.0244,0.888,0.9295,False,no reliable difference
+2015,era,79,0.0002,-0.0025,0.0017,0.83,0.8938,False,no reliable difference
+10s,era,77,-0.0001,-0.001,0.0008,0.906,0.9309,False,no reliable difference
+2017,era,135,-0.0004,-0.0085,0.0071,0.806,0.885,False,no reliable difference
+canadian,other,173,-0.0007,-0.0024,0.0009,0.334,0.4507,False,no reliable difference
+blues rock,genre,102,-0.0011,-0.0338,0.0623,0.958,0.9666,False,no reliable difference
+house,genre,168,-0.0022,-0.0215,0.0129,0.888,0.9295,False,no reliable difference
+party,theme,55,-0.0024,-0.0428,0.0302,0.972,0.972,False,no reliable difference
+swedish,other,178,-0.0026,-0.0097,0.0016,0.254,0.3979,False,no reliable difference
+britpop,genre,160,-0.0046,-0.0146,0.0044,0.274,0.3985,False,no reliable difference
+rap,genre,448,-0.0052,-0.0169,0.0049,0.298,0.412,False,no reliable difference
+christian,theme,44,-0.007,-0.0469,0.0579,0.936,0.953,False,no reliable difference
+funk,genre,234,-0.0075,-0.0379,0.0173,0.478,0.6015,False,no reliable difference
+american,other,179,-0.01,-0.0294,0.0025,0.27,0.3979,False,no reliable difference
+60s,era,280,-0.0105,-0.0541,0.0373,0.796,0.8827,False,no reliable difference
+hip hop,genre,577,-0.0115,-0.0235,0.0001,0.052,0.1213,False,no reliable difference
+black metal,genre,146,-0.0127,-0.0579,0.0283,0.626,0.7297,False,no reliable difference
+disco,genre,107,-0.0144,-0.0544,0.0125,0.384,0.506,False,no reliable difference
+gothic metal,genre,148,-0.015,-0.0586,0.036,0.814,0.8851,False,no reliable difference
+country,genre,210,-0.0239,-0.0571,0.005,0.098,0.186,False,no reliable difference
+heavy metal,genre,420,-0.0255,-0.0546,0.0143,0.262,0.3979,False,no reliable difference
+power metal,genre,132,-0.0313,-0.0836,0.0042,0.082,0.167,False,no reliable difference
+trap,genre,100,-0.032,-0.0904,0.0227,0.298,0.412,False,no reliable difference
+symphonic metal,genre,134,-0.0325,-0.0858,0.0143,0.27,0.3979,False,no reliable difference
+thrash metal,genre,219,-0.0375,-0.0661,0.0012,0.06,0.1344,False,no reliable difference

@@ -1,0 +1,15 @@
+category,n_tags,macro_F1,MAP,ROC-AUC,P@10,split
+era,10,0.1128,0.0724,0.6931,0.17,artist
+genre,71,0.2171,0.1619,0.7905,0.3577,artist
+instrumentation/production,7,0.1208,0.0764,0.731,0.2,artist
+mood/emotion,13,0.0218,0.0212,0.7026,0.0615,artist
+other,7,0.0743,0.0385,0.6475,0.0714,artist
+theme,4,0.0597,0.1035,0.8056,0.225,artist
+mood+theme,17,0.0307,0.0405,0.7269,0.1,artist
+era,10,0.1458,0.1017,0.7165,0.23,song
+genre,71,0.2456,0.1883,0.8073,0.4901,song
+instrumentation/production,7,0.129,0.0961,0.7464,0.4143,song
+mood/emotion,13,0.043,0.0276,0.7199,0.0692,song
+other,7,0.0793,0.055,0.6862,0.2286,song
+theme,4,0.0525,0.0878,0.8134,0.225,song
+mood+theme,17,0.0452,0.0418,0.7419,0.1059,song
